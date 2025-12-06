@@ -8,8 +8,30 @@
 import SwiftUI
 
 struct EventsMainView: View {
+    
+    @State var isOpen: Bool = false
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            List {
+                Section("Upcoming") {
+                    
+                }
+                .padding(.top, 20)
+                
+                Section("Past Events") {
+                    
+                }
+            }
+            .navigationTitle("My Events")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("+") {
+                        isOpen = true
+                    }
+                }
+            }
+        }
     }
 }
 

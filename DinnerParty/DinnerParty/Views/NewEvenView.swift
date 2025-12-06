@@ -8,8 +8,24 @@
 import SwiftUI
 
 struct NewEvenView: View {
+    
+    @State var eventName: String = ""
+    @State var name: String = ""
+    
+    @State private var date = Date.now
+    
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack{
+            GroupBox {
+                TextField("Enter Event Name", text: $eventName )
+                    .padding(.horizontal)
+                
+                
+            }
+            .padding()
+            .cornerRadius(24)
+        }
     }
 }
 
