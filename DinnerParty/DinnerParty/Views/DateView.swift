@@ -8,11 +8,64 @@
 import SwiftUI
 
 struct DateView: View {
+    
+    @State private var date = Date()
+    
+    @Binding var isPresented: Bool
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            HStack(spacing: 50) {
+                    Button() {
+                        isPresented.toggle()
+                    } label: {
+                        Image(systemName: "multiply")
+                            .resizable()
+                            .frame(width: 15, height: 15)
+                    }
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
+                    .padding(.horizontal)
+
+
+                    Text("Pick Date and Time")
+                    
+                    Button() {
+                        isPresented.toggle()
+                    } label: {
+                        Image(systemName: "checkmark")
+                            .resizable()
+                            .frame(width: 15, height: 15)
+                        
+                    }
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
+                    .padding(.horizontal)
+
+
+                }
+                DatePicker(
+                    "Start Date",
+                    selection: $date,
+                    displayedComponents: [.date]
+                )
+                .datePickerStyle(.graphical)
+                Divider()
+                .padding(.horizontal)
+                DatePicker(
+                    "Start Date",
+                    selection: $date,
+                    displayedComponents: [ .hourAndMinute]
+                )
+                .datePickerStyle(.graphical)
+                .padding(.horizontal)
+            
+        }
+        .frame(height: 550)
     }
 }
 
+
 #Preview {
-    DateView()
+    DateView(isPresented: .constant(true))
 }
