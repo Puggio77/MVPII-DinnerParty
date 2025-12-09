@@ -8,8 +8,22 @@
 import SwiftUI
 
 struct CourseStepperView: View {
+    
+    @State private var value = 0
+    let step = 1
+    let range = 0...5
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack{
+            Stepper(
+                value: $value,
+                in: range,
+                step: step
+            ) {
+                Text("\(value)")
+            }
+            .padding(5)
+        }
     }
 }
 

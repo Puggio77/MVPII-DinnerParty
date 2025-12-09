@@ -53,30 +53,22 @@ struct NewEvenView: View {
                 Section("Courses") {
                     HStack{
                         Text("Apetisers")
-                        Button("+") {
-                            apetisers = 0
-                        }
+                        CourseStepperView()
                     }
                     
                     HStack{
                         Text("Main Dishes")
-                        Button("+") {
-                            apetisers = 0
-                        }
+                        CourseStepperView()
                     }
                     
                     HStack{
                         Text("Desserts")
-                        Button("+") {
-                            apetisers = 0
-                        }
+                        CourseStepperView()
                     }
                     
                     HStack{
                         Text("Side Dishes")
-                        Button("+") {
-                            apetisers = 0
-                        }
+                        CourseStepperView()
                     }
                 }
                 .cornerRadius(24)
