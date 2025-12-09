@@ -17,14 +17,26 @@ struct NewEvenView: View {
     
     var body: some View {
         VStack{
-            GroupBox {
-                TextField("Enter Event Name", text: $eventName )
-                    .padding(.horizontal)
+            Form {
+                Section {
+                    TextField("Event Title", text: $eventName )
+                        .padding(.horizontal)
+                }
+                .cornerRadius(24)
                 
                 
+                Section {
+                    TextField("Enter Event Name", text: $eventName )
+                        .padding(.horizontal)
+                }
+                .cornerRadius(24)
+                
+                Section {
+                    TextField("Event Location", text: $eventName )
+                        .padding(.horizontal)
+                }
+                .cornerRadius(24)
             }
-            .padding()
-            .cornerRadius(24)
         }
     }
 }
