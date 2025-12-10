@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NewEvenView: View {
+struct NewEventView: View {
     
     @State var eventName: String = ""
     @State var name: String = ""
@@ -88,5 +88,5 @@ struct NewEvenView: View {
 }
 
 #Preview {
-    NewEvenView()
+    NewEventView()
 }
