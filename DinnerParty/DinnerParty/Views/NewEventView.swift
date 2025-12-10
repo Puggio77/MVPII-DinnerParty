@@ -11,7 +11,7 @@ struct NewEventView: View {
     
     @State var eventName: String = ""
     @State var name: String = ""
-        
+    
     @State var apetisers: Int = 0
     @State var mainDishes: Int = 0
     @State var desserts: Int = 0

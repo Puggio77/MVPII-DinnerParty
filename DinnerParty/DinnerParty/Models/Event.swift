@@ -7,3 +7,21 @@
 
 import Foundation
 
+struct Event: Identifiable {
+    
+    var id: UUID = UUID()
+    
+    var eventName: String
+    var eventDate: Date = Date()
+    var eventTime: Date = Date()
+    
+    // Courses ids
+    
+    var apetizers: Int
+    var mainDish: Int
+    
+    
+    var hostID: String
+    var invitees: [String] = []
+    
+}

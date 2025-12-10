@@ -26,8 +26,10 @@ struct EventsMainView: View {
             .navigationTitle("My Events")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("+") {
+                    NavigationLink{
                         NewEventView()
+                    } label: {
+                        Image(systemName: "plus")
                     }
                 }
             }
