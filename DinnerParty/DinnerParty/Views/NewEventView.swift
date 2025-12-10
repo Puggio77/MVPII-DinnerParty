@@ -34,7 +34,7 @@ struct NewEvenView: View {
                     Button {
                         isOpen = true
                     } label: {
-                        HStack(alignment: .center) {
+                        HStack() {
                             Image(systemName: "calendar")
                             Text("Date and Time")
                             
