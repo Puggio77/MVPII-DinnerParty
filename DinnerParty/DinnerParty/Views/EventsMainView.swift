@@ -27,7 +27,7 @@ struct EventsMainView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("+") {
-                        isOpen = true
+                        NewEventView()
                     }
                 }
             }
