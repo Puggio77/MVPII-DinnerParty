@@ -38,6 +38,10 @@ struct NewEvenView: View {
                             Image(systemName: "calendar")
                             Text("Date and Time")
                             
+                            Spacer()
+                            
+                            Text("Binding of the date")
+                            
                         }
                     }
                 }

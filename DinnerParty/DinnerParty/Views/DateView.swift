@@ -9,7 +9,8 @@ import SwiftUI
 
 struct DateView: View {
     
-    @State private var date = Date()
+    @State private var eventDate = Date()
+    @State private var eventTime = Date()
     
     @Binding var isPresented: Bool
     
@@ -46,15 +47,17 @@ struct DateView: View {
                 }
                 DatePicker(
                     "Start Date",
-                    selection: $date,
+                    selection: $eventDate,
                     displayedComponents: [.date]
                 )
                 .datePickerStyle(.graphical)
+            
                 Divider()
                 .padding(.horizontal)
+            
                 DatePicker(
                     "Start Date",
-                    selection: $date,
+                    selection: $eventTime,
                     displayedComponents: [ .hourAndMinute]
                 )
                 .datePickerStyle(.graphical)
