@@ -95,11 +95,13 @@ struct EventDetailView: View {
 
                 
                 //MARK: Challenge card section
+                
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
                         ForEach(viewModel.cards) { card in
-                            ChallengeCardView(card: card)
+                            ChallengeCardView(text: card.challenge)
                         }
+
                     }
                     .padding(.horizontal, 4)
                 }
@@ -128,38 +130,4 @@ struct EventDetailView: View {
 
 #Preview {
     EventDetailView()
-}
-
-struct ChallengeCardView: View {
-    let card: CardChallenge
-    
-    var body: some View {
-        VStack(spacing: 16) {
-            Text(card.challenge)
-                .font(.headline)
-                .multilineTextAlignment(.center)
-                .foregroundColor(.primary)
-            
-            Image(systemName: card.img)
-                .font(.largeTitle)
-                .foregroundStyle(.secondary)
-            
-            Button(action: {
-                // azione per "Claim"
-            }) {
-                Text("Claim")
-                    .font(.subheadline.weight(.semibold))
-                    .padding(.horizontal, 32)
-                    .padding(.vertical, 8)
-                    .background(Color.orange)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
-            }
-        }
-        .padding(16)
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
-        .frame(width: 260)
-    }
 }

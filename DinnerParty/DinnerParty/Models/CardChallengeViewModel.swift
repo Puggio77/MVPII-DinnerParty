@@ -7,8 +7,9 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
-class CardChallengeViewModel {
+class CardChallengeViewModel: ObservableObject {
     var cards: [CardChallenge] = [
         CardChallenge(challenge: "Use an ingredient that starts with s"),
         CardChallenge(challenge: "Use an ingredient that is green"),
@@ -17,4 +18,10 @@ class CardChallengeViewModel {
         CardChallenge(challenge: "Use a spice you’ve never used before"),
         CardChallenge(challenge: "Use an ingredient that has only four letters"),
     ]
+    
+    @Published var currentCard: CardChallenge?
+    
+    func drawRandomCard() {
+        currentCard = cards.randomElement()
+    }
 }
