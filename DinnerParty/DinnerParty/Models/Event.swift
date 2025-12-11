@@ -15,12 +15,14 @@ struct Event: Identifiable {
     var eventDate: Date = Date()
     var eventTime: Date = Date()
     
-    // Courses ids
-    
+    // Courses ids -
     var apetizers: Int
-    var mainDish: Int
+    var mainDishes: Int
+    var desserts: Int
+    var sideDishes: Int
     
     
+    // Host and the invitees -
     var hostID: String
     var invitees: [String] = []
     
