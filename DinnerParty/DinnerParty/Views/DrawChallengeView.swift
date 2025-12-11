@@ -64,8 +64,7 @@ struct DrawChallengeView: View {
                 showChallenge = false
                 viewModel.currentCard = nil
             }
-            .navigationTitle("draw your challenge")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Draw your challenge")
         }
     }
     
