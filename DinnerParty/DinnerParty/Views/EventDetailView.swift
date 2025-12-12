@@ -73,7 +73,6 @@ struct EventDetailView: View {
                 .padding(.top, 8)
                 
                 // MARK: course picker sectio
-                
                 Picker("Course", selection: $selectedCourse) {
                     ForEach(courses, id: \.self) { course in
                         Text(course).tag(course)
@@ -95,16 +94,33 @@ struct EventDetailView: View {
 
                 
                 //MARK: Challenge card section
-                
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 16) {
-                        ForEach(viewModel.cards) { card in
-                            ChallengeCardView(text: card.challenge)
+                RoundedRectangle(cornerRadius: 28)
+                    .fill(Color.white)
+                    .shadow(color: Color.black.opacity(0.06), radius: 16, x: 0, y: 8)
+                    .overlay(
+                        VStack(spacing: 20) {
+                            Text("Draw a card to\nreveal")
+                                .font(.title3.weight(.semibold))
+                                .foregroundStyle(Color(.systemBrown))
+                                .multilineTextAlignment(.center)
+                            
+                            NavigationLink {
+                                DrawChallengeView()
+                            } label: {
+                                Text("Claim")
+                                    .font(.headline)
+                                    .frame(width: 200)
+                                    .padding(.vertical, 14)
+                                    .background(Color.orange)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(26)
+                                    .shadow(color: Color.orange.opacity(0.25), radius: 10, x: 0, y: 6)
+                            }
                         }
-
-                    }
-                    .padding(.horizontal, 4)
-                }
+                        .padding(.vertical, 28)
+                    )
+                    .frame(height: 280)
+                    .padding(.horizontal, 8)
                                 
                 Button(action: {
                     // invite func

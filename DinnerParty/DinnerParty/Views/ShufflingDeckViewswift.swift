@@ -31,7 +31,6 @@ struct ShufflingDeckView: View {
             if newValue {
                 startAnimation()
             } else {
-                // fermo l’animazione riportando l’offset alla posizione iniziale
                 animate = false
             }
         }
