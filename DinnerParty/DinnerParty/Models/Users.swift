@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+struct Users : Identifiable, Codable {
+    var id: UUID = UUID()
+    
+}
