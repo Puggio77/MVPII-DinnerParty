@@ -17,7 +17,7 @@ struct ChallengeCardColored: View {
                 .shadow(color: .black.opacity(0.1), radius: 8, y: 4)
                 .overlay(
                     RoundedRectangle(cornerRadius: 32, style: .continuous)
-                        .stroke(Color("AmberGlow"), lineWidth: 6)
+                        .stroke(Color.amberGlow, lineWidth: 6)
                 )
             
             Text(text)
