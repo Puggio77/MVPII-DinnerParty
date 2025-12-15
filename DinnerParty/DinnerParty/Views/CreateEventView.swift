@@ -66,13 +66,38 @@ struct CreateEventView: View {
                     .padding(.bottom, 10)
                 
                 VStack(spacing: 12) {
-                    CourseCounter(title: "Appetisers", count: $appetisers)
-                    CourseCounter(title: "Main Dishes", count: $mainDishes)
-                    CourseCounter(title: "Dessert", count: $dessert)
-                    CourseCounter(title: "Side Dishes", count: $sideDishes)
+                    HStack{
+                        Text("Apetisers")
+                        CourseStepperView()
+                    }
+                    HStack{
+                        Text("Main Dishes")
+                        CourseStepperView()
+                    }
+                    HStack{
+                        Text("Desserts")
+                        CourseStepperView()
+                    }
+                    HStack{
+                        Text("Side Dishes")
+                        CourseStepperView()
+                    }
                 }
             }
             .padding(.horizontal, 30)
+            
+            NavigationLink{
+                EventDetailView(event: Event.sampleEvent)
+            } label: {
+                Text("Add Event")
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color("AmberGlow"))
+                    .cornerRadius(30)
+            }
+            .padding(.horizontal, 40)
             
             Spacer()
         }

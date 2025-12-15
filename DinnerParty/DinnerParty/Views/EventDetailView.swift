@@ -96,9 +96,9 @@ struct EventDetailView: View {
                     .frame(height: 280)
                     .padding(.horizontal, 8)
                                 
-                Button(action: {
-                    // invite func
-                }) {
+                NavigationLink {
+                    InvitePeopleView()
+                } label: {
                     Text("Invite more People")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
