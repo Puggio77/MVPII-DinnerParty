@@ -13,6 +13,10 @@ struct CreateEventView: View {
     @State private var eventTitle = ""
     @State private var showDatePicker = false
     @State private var selectedDate = Date()
+
+    @State private var selectedTime = Date()
+
+  
     @State private var hasSelectedDate = false
 
     @State private var appetisers = 0
@@ -140,6 +144,12 @@ struct CreateEventView: View {
     }
 }
 
+
 #Preview {
     CreateEventView()
 }
+
+//.sheet(isPresented: $showDatePicker) {
+//    DatePickerSheet(isVisible: $showDatePicker, date: $selectedDate, time: $selectedTime)
+//        .presentationDetents([.fraction(0.9), .height(550)])
+//}
