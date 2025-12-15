@@ -8,84 +8,29 @@
 import SwiftUI
 
 struct EventsMainView: View {
+    
     @State var isOpen: Bool = false
     
-    // MARK: Sample events, modify once data source is set up
-    @State var events: [Event] = sampleEvents
-
-    // Filter events into upcoming and past
-    var upcomingEvents: [Event] {
-        events.filter { $0.eventDateTime >= Date() }
-    }
-
-    var pastEvents: [Event] {
-        events.filter { $0.eventDateTime < Date() }
-    }
-
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    // Upcoming Section
-                    if !upcomingEvents.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Upcoming")
-                                .font(.headline)
-                                .foregroundStyle(Color("AmberGlow"))
-                                .padding(.horizontal)
-
-                            ForEach(upcomingEvents) { event in
-                                NavigationLink {
-                                    EventDetailView(event: event)
-                                } label: {
-                                    EventCardView(
-                                        event: event,
-                                        isUpcoming: true
-                                    )
-                                }
-                                .buttonStyle(.plain)
-                                .padding(.horizontal)
-                            }
-                        }
-                    }
-
-                    // Past Section
-                    if !pastEvents.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Past")
-                                .font(.headline)
-                                .foregroundStyle(Color("AmberGlow"))
-                                .padding(.horizontal)
-
-                            ForEach(pastEvents) { event in
-                                NavigationLink {
-                                    EventDetailView(event: event)
-                                } label: {
-                                    EventCardView(
-                                        event: event,
-                                        isUpcoming: false
-                                    )
-                                }
-                                .buttonStyle(.plain)
-                                .padding(.horizontal)
-                            }
-                        }
-                    }
+            List {
+                Section("Upcoming") {
+                    
                 }
-                .padding(.vertical)
+                .padding(.top, 20)
+                
+                Section("Past Events") {
+                    
+                }
             }
-            .background(Color(.systemGroupedBackground))
             .navigationTitle("My Events")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
+                    NavigationLink{
                         CreateEventView()
                     } label: {
-                        Button("Done", systemImage: "plus") {
-
-                        }
+                        Image(systemName: "plus")
                     }
-
                 }
             }
         }
