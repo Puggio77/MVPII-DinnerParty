@@ -8,115 +8,136 @@
 import SwiftUI
 
 struct EventDetailView: View {
-    
     let event: Event
-    
+
     private let viewModel = CardChallengeViewModel()
-    
-    @State private var selectedCourse = "Main Dishes"
-    private let courses = ["Main Dishes", "Starters", "Side Dishes", "Desserts", "Drinks"]
-    
-    
+
+    @State private var selectedCourse = "Main Course"
+    private let courses = [
+        "Main Course", "Starters", "Side Dishes", "Desserts", "Drinks",
+    ]
+
     var body: some View {
         NavigationStack {
-            VStack(spacing: 24) {
-                
-                // MARK: Event info section
-                VStack(spacing: 8) {
-                    Text(event.title)
-                        .font(.title.bold())
+            ZStack {
+                Color(red: 0.94, green: 0.93, blue: 0.91)
+                    .ignoresSafeArea()
 
-                    
-                    Text(formatEventDateTime(event.eventDateTime))
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                    
-                    HStack(spacing: 4) {
-                        Image(systemName: "mappin.and.ellipse")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        Text(event.location)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.top, 16)
-                
-                // MARK: Countdown Timer
-                CountdownTimerView(eventDate: event.eventDateTime)
-                    .padding(.top, 8)
-                
-                // MARK: course picker section
-                Picker("Course", selection: $selectedCourse) {
-                    ForEach(courses, id: \.self) { course in
-                        Text(course).tag(course)
-                    }
-                }
-                .pickerStyle(.menu)
-                .labelsHidden()
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
-                .padding(.horizontal, 16)
-                .background(
-                    RoundedRectangle(cornerRadius: 20)
-                )
-                .foregroundColor(.white)
-                .multilineTextAlignment(.center)
-                .contentShape(Rectangle())
-                .padding(.top, 8)
+                VStack(spacing: 24) {
 
-                
-                //MARK: Challenge card section
-                RoundedRectangle(cornerRadius: 28)
-                    .fill(Color.white)
-                    .shadow(color: Color.black.opacity(0.06), radius: 16, x: 0, y: 8)
-                    .overlay(
-                        VStack(spacing: 20) {
-                            Text("Draw a card to\nreveal")
-                                .font(.title3.weight(.semibold))
-                                .foregroundStyle(Color(.systemBrown))
-                                .multilineTextAlignment(.center)
-                            
-                            NavigationLink {
-                                DrawChallengeView()
-                            } label: {
-                                Text("Claim")
-                                    .font(.headline)
-                                    .frame(width: 200)
-                                    .padding(.vertical, 14)
-                                    .background(Color.orange)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(26)
-                                    .shadow(color: Color.orange.opacity(0.25), radius: 10, x: 0, y: 6)
+                    // MARK: Event info section
+                    VStack(spacing: 8) {
+                        Text(event.title)
+                            .font(.largeTitle.bold())
+                            .foregroundStyle(
+                                Color(red: 0.25, green: 0.15, blue: 0.1)
+                            )
+
+                        Text(formatEventDateTime(event.eventDateTime))
+                            .font(.title3.bold())
+                            .foregroundColor(.secondary)
+
+                        HStack(spacing: 4) {
+                            Image(systemName: "mappin.and.ellipse")
+                                .font(.headline)
+                            Text(event.location)
+                                .font(.title3)
+                        }
+                        .foregroundStyle(.secondary)
+                    }
+                    .fontDesign(.serif)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, 16)
+
+                    // MARK: Countdown Timer
+                    CountdownTimerView(eventDate: event.eventDateTime)
+                        .padding(.top, 8)
+
+                    // MARK: course picker section
+                    Menu {
+                        ForEach(courses, id: \.self) { course in
+                            Button(course) {
+                                selectedCourse = course
                             }
                         }
-                        .padding(.vertical, 28)
-                    )
-                    .frame(height: 280)
-                    .padding(.horizontal, 8)
-                                
-                NavigationLink {
-                    InvitePeopleView()
-                } label: {
-                    Text("Invite more People")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(Color.orange)
-                        .foregroundColor(.white)
-                        .cornerRadius(20)
+                    } label: {
+                        HStack(spacing: 8) {
+                            Text(selectedCourse)
+
+                            Image(systemName: "chevron.up.chevron.down")
+                        }
+                        .foregroundColor(.primary)
+                        .fontDesign(.serif)
+                        .padding(.vertical, 12)
+                        .padding(.horizontal, 20)
+                    }
+                    
+//                    .background(.white.opacity(0.5), in: .capsule)
+                    .glassEffect(.regular.interactive())
+                    .padding(.top, 8)
+
+                    //MARK: Challenge card section
+                    RoundedRectangle(cornerRadius: 28)
+                        .fill(Color.white)
+
+                        .overlay(
+                            VStack(spacing: 24) {
+                                Spacer()
+                                Text("Draw a card to reveal the challenge")
+                                    .font(
+                                        .system(
+                                            size: 22,
+                                            weight: .semibold,
+                                            design: .serif
+                                        )
+                                    )
+                                    .padding()
+                                    .multilineTextAlignment(.center)
+                                Spacer()
+                                NavigationLink {
+                                    DrawChallengeView()
+                                } label: {
+                                    Text("Claim")
+                                        .font(.headline)
+                                        .padding(.vertical, 20)
+                                        .padding(.horizontal, 100)
+                                        .background(.amberGlow, in: .capsule)
+                                        .foregroundColor(.white)
+                                        .glassEffect(.regular.interactive())
+                                }
+                            }
+                            .padding(.vertical, 32)
+                        )
+                        .frame(height: 350)
+                        .padding(.horizontal, 8)
+
+                    // MARK: Page indicator dots
+                    // ONLY A PLACEHOLDER, use TabView() in the future
+                    HStack(spacing: 8) {
+                        ForEach(0..<4) { index in
+                            Circle()
+                                .fill(
+                                    index == 1
+                                        ? Color(
+                                            red: 0.3,
+                                            green: 0.25,
+                                            blue: 0.2
+                                        ) : Color.gray.opacity(0.4)
+                                )
+                                .frame(width: 8, height: 8)
+                        }
+                    }
+                    .padding(.top, 8)
+
+                    Spacer()
                 }
                 .padding(.horizontal, 16)
-                .padding(.bottom, 16)
-                
             }
-            .padding(.horizontal, 16)
-            .background(Color(.systemGroupedBackground))
             .navigationTitle("Event Detail")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
-    
+
     //Format for the date and time
     private func formatEventDateTime(_ date: Date) -> String {
         let formatter = DateFormatter()
