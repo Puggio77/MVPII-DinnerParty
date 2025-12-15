@@ -9,15 +9,17 @@ import SwiftUI
 
 struct EventsMainView: View {
     @State var isOpen: Bool = false
+    
+    // MARK: Sample events, modify once data source is set up
     @State var events: [Event] = sampleEvents
 
     // Filter events into upcoming and past
     var upcomingEvents: [Event] {
-        sampleEvents.filter { $0.eventDateTime >= Date() }
+        events.filter { $0.eventDateTime >= Date() }
     }
 
     var pastEvents: [Event] {
-        sampleEvents.filter { $0.eventDateTime < Date() }
+        events.filter { $0.eventDateTime < Date() }
     }
 
     var body: some View {
