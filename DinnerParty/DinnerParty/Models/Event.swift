@@ -4,7 +4,7 @@
 //
 //  Created by Aleksandra Stupiec on 10/12/25.
 //
-
+/*
 import Foundation
 
 struct Event: Identifiable, Codable {
@@ -38,3 +38,5 @@ extension Event {
         )
     )!, apetizers: 2, mainDishes: 1, desserts: 1, sideDishes: 2, hostID: "Dummy Cover, replace with real host id", invitees: ["", ""])
 }
+
+*/

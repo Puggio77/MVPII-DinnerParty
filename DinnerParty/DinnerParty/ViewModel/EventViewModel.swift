@@ -5,6 +5,7 @@
 //  Created by Aleksandra Stupiec on 10/12/25.
 //
 
+/*
 import Foundation
 import SwiftUI
 
@@ -16,3 +17,4 @@ class EventViewModel {
         Event(eventName: "Friendsgiving Dinner", eventDate: Date(), apetizers: 0, mainDishes: 0, desserts: 0, sideDishes: 0, hostID: "", invitees: ["", "", ""])
     ]
 }
+*/
