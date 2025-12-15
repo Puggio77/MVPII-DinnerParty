@@ -5,66 +5,76 @@
 //
 //  Created by Seyedreza Aghayarikordkandi on 09/12/25.
 //
+
 import SwiftUI
 
 struct DatePickerSheet: View {
-    @Binding var selectedDate: Date
+
     @Binding var isVisible: Bool
 
+    @Binding var date: Date
+    @Binding var time: Date
+    
     var body: some View {
         VStack(spacing: 20) {
 
             // --- TOP HANDLER ---
-            Capsule()
-                .fill(Color.gray.opacity(0.3))
-                .frame(width: 40, height: 5)
-                .padding(.top, 16)
+//            Capsule()
+//                .fill(Color.gray.opacity(0.3))
+//                .frame(width: 40, height: 5)
+//                .padding(.top, 16)
 
-            // --- HEADER WITH X & CHECK ---
             HStack {
-                // X dismiss button
+                //  dismiss button
                 Button(action: { isVisible = false }) {
                     Image(systemName: "xmark")
-                        .font(.system(size: 22, weight: .bold))
+                        .font(.system(size: 22))
                         .foregroundColor(.black)
                 }
+                .buttonStyle(.glass)
+                .buttonBorderShape(.circle)
 
                 Spacer()
 
                 Text("Pick a Date and Time")
-                    .font(.system(size: 22, weight: .semibold))
+                    .font(.system(size: 22))
 
                 Spacer()
 
-                // CHECKMARK – confirm
+                //  confirm
                 Button(action: { isVisible = false }) {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 22, weight: .bold))
+                        .font(.system(size: 22))
                         .foregroundColor(.blue)
                 }
+                .buttonStyle(.glass)
+                .buttonBorderShape(.circle)
             }
-            .padding(.horizontal, 20)
+            .padding()
 
             // --- DATE PICKER ---
             DatePicker(
-                "",
-                selection: $selectedDate,
-                displayedComponents: [.date, .hourAndMinute]
+                "Start Date",
+                selection: $date,
+                displayedComponents: [.date]
             )
-            .datePickerStyle(.graphical)   // shows calendar like Figma
-            .padding(.horizontal, 10)
-
-            Spacer()
+            .datePickerStyle(.graphical)
+        
+            Divider()
+            .padding(.horizontal)
+        
+            DatePicker(
+                "Start Date",
+                selection: $time,
+                displayedComponents: [.hourAndMinute]
+            )
+            .datePickerStyle(.graphical)
+            .padding()
+            
         }
-        .padding(.bottom, 30)
-        .background(Color.white)
-        .cornerRadius(30)
-        .shadow(color: .black.opacity(0.1), radius: 8, y: -2)
     }
 }
 
-
-
 #Preview {
-    DatePickerSheet(selectedDate: .constant(Date()), isVisible: .constant(true))
+    DatePickerSheet(isVisible: .constant(true), date: .constant(Date()), time: .constant(Date()))
 }

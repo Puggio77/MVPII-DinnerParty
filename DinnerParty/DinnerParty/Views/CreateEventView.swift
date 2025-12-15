@@ -13,6 +13,8 @@ struct CreateEventView: View {
     @State private var eventTitle = ""
     @State private var showDatePicker = false
     @State private var selectedDate = Date()
+    @State private var selectedTime = Date()
+
     
     @State private var appetisers = 0
     @State private var mainDishes = 0
@@ -98,8 +100,11 @@ struct CreateEventView: View {
             }
             
             .sheet(isPresented: $showDatePicker) {
-                DatePickerSheet(selectedDate: $selectedDate, isVisible: $showDatePicker)
-            }.navigationTitle("Create an Event")
+                DatePickerSheet(isVisible: $showDatePicker, date: $selectedDate, time: $selectedTime)
+                    .presentationDetents([.fraction(0.9), .height(550)])
+            }
+            .navigationTitle("Create an Event")
+            .padding(.top)
         }
     }
     

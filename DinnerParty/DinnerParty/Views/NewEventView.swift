@@ -9,10 +9,11 @@ import SwiftUI
 
 struct NewEventView: View {
     
-    @State var eventName: String = ""
-    @State var name: String = ""
-    
-    @State var apetisers: Int = 0
+    @State var title: String = ""
+    @State var date: Date = Date()
+    @State var time: Date = Date()
+    @State var location: String = ""
+    @State var appetizers: Int = 0
     @State var mainDishes: Int = 0
     @State var desserts: Int = 0
     @State var sideDishes: Int = 0
@@ -24,7 +25,7 @@ struct NewEventView: View {
         NavigationStack{
             Form {
                 Section {
-                    TextField("Event Title", text: $eventName )
+                    TextField("Event Title", text: $title )
                         .padding(.horizontal)
                 }
                 .cornerRadius(24)
@@ -49,7 +50,7 @@ struct NewEventView: View {
                 .cornerRadius(24)
                 
                 Section {
-                    TextField("Event Location", text: $eventName )
+                    TextField("Event Location", text: $location )
                         .padding(.horizontal)
                 }
                 .cornerRadius(24)
