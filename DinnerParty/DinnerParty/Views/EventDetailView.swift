@@ -9,6 +9,8 @@ import SwiftUI
 
 struct EventDetailView: View {
     
+    let event: Event
+    
     private let viewModel = CardChallengeViewModel()
     
     @State private var selectedCourse = "Main Dishes"
@@ -19,13 +21,13 @@ struct EventDetailView: View {
         NavigationStack {
             VStack(spacing: 24) {
                 
-                // MARK: Friendsgiving dinner section
+                // MARK: Event info section
                 VStack(spacing: 8) {
-                    Text("Friendsgiving Dinner")
+                    Text(event.title)
                         .font(.title.bold())
-                        .foregroundColor(.orange)
+
                     
-                    Text("November 20 | 7:00 PM")
+                    Text(formatEventDateTime(event.eventDateTime))
                         .font(.headline)
                         .foregroundColor(.secondary)
                     
@@ -33,7 +35,7 @@ struct EventDetailView: View {
                         Image(systemName: "mappin.and.ellipse")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
-                        Text("Ana's Apartment")
+                        Text(event.location)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -41,38 +43,11 @@ struct EventDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.top, 16)
                 
-                // MARK: Clock
-                HStack(spacing: 32) {
-                    VStack(spacing: 4) {
-                        Text("05 :")
-                            .font(.system(size: 34, weight: .semibold))
-                            .foregroundStyle(.orange)
-                        Text("Days")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    
-                    VStack(spacing: 4) {
-                        Text("03")
-                            .font(.system(size: 34, weight: .semibold))
-                            .foregroundStyle(.orange)
-                        Text("Hours")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    
-                    VStack(spacing: 4) {
-                        Text(": 30")
-                            .font(.system(size: 34, weight: .semibold))
-                            .foregroundStyle(.orange)
-                        Text("Minutes")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .padding(.top, 8)
+                // MARK: Countdown Timer
+                CountdownTimerView(eventDate: event.eventDateTime)
+                    .padding(.top, 8)
                 
-                // MARK: course picker sectio
+                // MARK: course picker section
                 Picker("Course", selection: $selectedCourse) {
                     ForEach(courses, id: \.self) { course in
                         Text(course).tag(course)
@@ -85,7 +60,6 @@ struct EventDetailView: View {
                 .padding(.horizontal, 16)
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(Color.orange)
                 )
                 .foregroundColor(.white)
                 .multilineTextAlignment(.center)
@@ -142,8 +116,15 @@ struct EventDetailView: View {
             .navigationTitle("Event Detail")
         }
     }
+    
+    //Format for the date and time
+    private func formatEventDateTime(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM d · h:mm a"
+        return formatter.string(from: date)
+    }
 }
 
 #Preview {
-    EventDetailView()
+    EventDetailView(event: Event.sampleEvent)
 }
