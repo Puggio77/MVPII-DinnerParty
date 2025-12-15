@@ -14,8 +14,8 @@ struct CreateEventView: View {
     @State private var showDatePicker = false
     @State private var selectedDate = Date()
     @State private var selectedTime = Date()
+    @State private var hasSelectedDate = false
 
-    
     @State private var appetisers = 0
     @State private var mainDishes = 0
     @State private var dessert = 0
@@ -83,34 +83,44 @@ struct CreateEventView: View {
                 }
                 .padding(.horizontal, 30)
                 
-                NavigationLink{
+                NavigationLink {
                     EventDetailView(event: Event.sampleEvent)
                 } label: {
                     Text("Add Event")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(.white)
+                        .font(.headline)
+                        .padding(.vertical, 20)
                         .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color("AmberGlow"))
-                        .cornerRadius(30)
+                        .foregroundStyle(.white)
+                        .background(.amberGlow)
+                        .clipShape(.capsule)
+                        .glassEffect(.regular.interactive(), in: .capsule)
                 }
-                .padding(.horizontal, 40)
-                
-                Spacer()
+                .padding(.bottom, 20)
             }
-            
-            .sheet(isPresented: $showDatePicker) {
-                DatePickerSheet(isVisible: $showDatePicker, date: $selectedDate, time: $selectedTime)
-                    .presentationDetents([.fraction(0.9), .height(550)])
+            .padding(.top, 20)
+            .padding(.horizontal, 20)
+        }
+        .navigationTitle("Create new event")
+        .navigationBarTitleDisplayMode(.large)
+        .sheet(isPresented: $showDatePicker) {
+                DatePickerSheet(isVisible: $showDatePicker, date: $selectedDate, time: $selectedTime
+            )
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.hidden)
+            .onDisappear {
+                hasSelectedDate = true
             }
-            .navigationTitle("Create an Event")
-            .padding(.top)
         }
     }
-    
 }
+
 
 #Preview {
     CreateEventView()
     
 }
+
+//.sheet(isPresented: $showDatePicker) {
+//    DatePickerSheet(isVisible: $showDatePicker, date: $selectedDate, time: $selectedTime)
+//        .presentationDetents([.fraction(0.9), .height(550)])
+//}
