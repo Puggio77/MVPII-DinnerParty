@@ -79,7 +79,7 @@ struct EventsMainView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
-                        CreateEventView()
+                        CreateEventView(EventVM: EventViewModel())
                     } label: {
                         Button("Done", systemImage: "plus") {
 

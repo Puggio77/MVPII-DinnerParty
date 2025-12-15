@@ -13,7 +13,6 @@ struct DatePickerSheet: View {
     @Binding var isVisible: Bool
 
     @Binding var date: Date
-    @Binding var time: Date
     
     var body: some View {
         VStack(spacing: 20) {
@@ -65,16 +64,17 @@ struct DatePickerSheet: View {
         
             DatePicker(
                 "Start Date",
-                selection: $time,
+                selection: $date,
                 displayedComponents: [.hourAndMinute]
             )
             .datePickerStyle(.graphical)
-            .padding()
+            .padding(.horizontal)
             
         }
+        .frame(height: 550)
     }
 }
 
 #Preview {
-    DatePickerSheet(isVisible: .constant(true), date: .constant(Date()), time: .constant(Date()))
+    DatePickerSheet(isVisible: .constant(true), date: .constant(Date()))
 }

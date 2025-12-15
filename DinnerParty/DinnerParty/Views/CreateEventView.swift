@@ -13,9 +13,6 @@ struct CreateEventView: View {
     @State private var eventTitle = ""
     @State private var showDatePicker = false
     @State private var selectedDate = Date()
-
-    @State private var selectedTime = Date()
-
   
     @State private var hasSelectedDate = false
 
@@ -23,6 +20,8 @@ struct CreateEventView: View {
     @State private var mainDishes = 0
     @State private var dessert = 0
     @State private var sideDishes = 0
+    
+    var EventVM : EventViewModel
 
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -111,7 +110,9 @@ struct CreateEventView: View {
 
                     // MARK: - Add Event Button
                     NavigationLink {
-                        EventDetailView(event: Event.sampleEvent)
+                        Button("") {
+                            EventVM.addEvent(title: eventTitle, date: selectedDate)
+                        }
                     } label: {
                         Text("Add Event")
                             .font(.headline)
@@ -131,10 +132,10 @@ struct CreateEventView: View {
             .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $showDatePicker) {
                 DatePickerSheet(
-                    selectedDate: $selectedDate,
-                    isVisible: $showDatePicker
+                    isVisible: $showDatePicker,
+                    date: $selectedDate
                 )
-                .presentationDetents([.medium, .large])
+                .presentationDetents([ .large])
                 .presentationDragIndicator(.hidden)
                 .onDisappear {
                     hasSelectedDate = true
@@ -146,7 +147,7 @@ struct CreateEventView: View {
 
 
 #Preview {
-    CreateEventView()
+    CreateEventView(EventVM: EventViewModel())
 }
 
 //.sheet(isPresented: $showDatePicker) {
