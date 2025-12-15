@@ -30,8 +30,8 @@ struct EventsMainView: View {
                     if !upcomingEvents.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Upcoming")
-                                .font(.headline)
-                                .foregroundStyle(Color("AmberGlow"))
+                                .font(.title2.bold())
+                                .foregroundStyle(Color.amberGlow)
                                 .padding(.horizontal)
 
                             ForEach(upcomingEvents) { event in
@@ -53,8 +53,8 @@ struct EventsMainView: View {
                     if !pastEvents.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Past")
-                                .font(.headline)
-                                .foregroundStyle(Color("AmberGlow"))
+                                .font(.title2.bold())
+                                .foregroundStyle(Color.amberGlow)
                                 .padding(.horizontal)
 
                             ForEach(pastEvents) { event in

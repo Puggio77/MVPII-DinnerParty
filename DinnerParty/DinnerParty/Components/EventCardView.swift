@@ -44,7 +44,7 @@ struct EventCardView: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: 20)
-                .stroke(isUpcoming ? Color("AmberGlow") : Color.gray.opacity(0.2), lineWidth: isUpcoming ? 2 : 1)
+                .stroke(isUpcoming ? Color.amberGlow : Color.gray.opacity(0.2), lineWidth: isUpcoming ? 2 : 1)
         )
     }
 }
