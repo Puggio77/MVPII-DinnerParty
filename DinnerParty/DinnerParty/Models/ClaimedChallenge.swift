@@ -1,5 +1,5 @@
 //
-//  ClaimedChallengeModle.swift
+//  ClaimedChallenge.swift
 //  DinnerParty
 //
 //  Created by Ana Karina Aramoni Ruiz on 16/12/25.

@@ -18,15 +18,17 @@ struct CountdownTimerView: View {
     
     var body: some View {
         HStack(spacing: 15) {
-            TimeUnitView(value: timeRemaining.days, unit: "Days", showColon: true)
+            TimeUnitView(value: timeRemaining.hours, unit: "Hours", showColon: true)
             Text(":")
-                .font(.system(size: 34, weight: .semibold))
+                .font(.system(size: 40, weight: .light, design: .serif))
+                .foregroundColor(.primary)
                 .offset(y: -15)
-            TimeUnitView(value: timeRemaining.hours, unit: "Hours", showColon: false)
+            TimeUnitView(value: timeRemaining.minutes, unit: "Minutes", showColon: false)
             Text(":")
-                .font(.system(size: 34, weight: .semibold))
+                .font(.system(size: 40, weight: .light, design: .serif))
+                .foregroundColor(.primary)
                 .offset(y: -15)
-            TimeUnitView(value: timeRemaining.minutes, unit: "Minutes", showColon: true)
+            TimeUnitView(value: timeRemaining.seconds, unit: "Seconds", showColon: true)
         }
         .onAppear {
             updateTimeRemaining()
@@ -37,7 +39,9 @@ struct CountdownTimerView: View {
     }
     
     private func updateTimeRemaining() {
-        timeRemaining = calculateTimeRemaining(until: eventDate)
+        withAnimation(.snappy(duration: 0.3)) {
+            timeRemaining = calculateTimeRemaining(until: eventDate)
+        }
     }
     
     private func calculateTimeRemaining(until date: Date) -> TimeComponents {
@@ -46,7 +50,7 @@ struct CountdownTimerView: View {
         
         // return zeros if the event has passed
         guard difference > 0 else {
-            return TimeComponents(days: 0, hours: 0, minutes: 0)
+            return TimeComponents(days: 0, hours: 0, minutes: 0, seconds: 0)
         }
         
         let totalSeconds = Int(difference)
@@ -58,8 +62,9 @@ struct CountdownTimerView: View {
         let remainingAfterHours = remainingAfterDays % 3600
         
         let minutes = remainingAfterHours / 60
+        let seconds = remainingAfterHours % 60
         
-        return TimeComponents(days: days, hours: hours, minutes: minutes)
+        return TimeComponents(days: days, hours: hours, minutes: minutes, seconds: seconds)
     }
 }
 
@@ -73,12 +78,14 @@ struct TimeUnitView: View {
         VStack(spacing: 4) {
             HStack(spacing: 0) {
                 Text(String(format: "%02d", value))
-                    .font(.system(size: 34, weight: .semibold))
-                
+                    .font(.system(size: 40, weight: .light, design: .serif))
+                    .foregroundColor(.primary)
+                    .contentTransition(.numericText(countsDown: true))
+                    .monospacedDigit()
             }
             
             Text(unit)
-                .font(.subheadline)
+                .font(.system(size: 14, design: .serif))
                 .foregroundStyle(.secondary)
         }
     }

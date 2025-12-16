@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct EventsMainView: View {
     
     @ObservedObject private var eventManager = EventManager.shared
@@ -16,35 +14,50 @@ struct EventsMainView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                Section("Upcoming") {
-                    ForEach(upcomingEvents) { event in
-                        NavigationLink {
-                            EventDetailView(eventID: event.id)
-                        } label: {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(event.title)
-                                    .font(.headline)
-                                Text(formatDate(event.eventDateTime))
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    // Upcoming Section
+                    if !upcomingEvents.isEmpty {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Upcoming")
+                                .font(.title2.bold())
+                                .foregroundStyle(Color.amberGlow)
+                                .padding(.horizontal)
+
+                            ForEach(upcomingEvents) { event in
+                                NavigationLink {
+                                    EventDetailView(eventID: event.id)
+                                } label: {
+                                    EventCardView(
+                                        event: event,
+                                        isUpcoming: true
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                                .padding(.horizontal)
                             }
                         }
                     }
-                }
-                .padding(.top, 20)
-                
-                Section("Past Events") {
-                    ForEach(pastEvents) { event in
-                        NavigationLink {
-                            EventDetailView(eventID: event.id)
-                        } label: {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(event.title)
-                                    .font(.headline)
-                                Text(formatDate(event.eventDateTime))
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
+
+                    // Past Section
+                    if !pastEvents.isEmpty {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Past")
+                                .font(.title2.bold())
+                                .foregroundStyle(Color.amberGlow)
+                                .padding(.horizontal)
+
+                            ForEach(pastEvents) { event in
+                                NavigationLink {
+                                    EventDetailView(eventID: event.id)
+                                } label: {
+                                    EventCardView(
+                                        event: event,
+                                        isUpcoming: false
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                                .padding(.horizontal)
                             }
                         }
                     }

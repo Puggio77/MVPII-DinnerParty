@@ -43,7 +43,7 @@ struct InvitePeopleView: View {
                         Image(systemName: "plus")
                             .font(.system(size: 20, weight: .bold))
                             .padding()
-                            .background(Color("AmberGlow"))
+                            .background(Color.amberGlow)
                             .foregroundColor(.white)
                             .clipShape(Circle())
                     }
@@ -65,7 +65,7 @@ struct InvitePeopleView: View {
                                 Spacer()
                                 
                                 Image(systemName: "person.crop.circle.fill.badge.checkmark")
-                                    .foregroundColor(Color("AmberGlow"))
+                                    .foregroundColor(Color.amberGlow)
                             }
                         }
                         .onDelete(perform: deleteFriend)

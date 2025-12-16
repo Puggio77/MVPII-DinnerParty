@@ -47,38 +47,39 @@ struct DrawChallengeView: View {
                 }
                 .frame(maxHeight: .infinity)
                 
+                
+                ShufflingDeckView(isShuffling: isShuffling)
+                    .frame(height: 260)
+                    .padding(.bottom, 24)
                 if showChallenge {
                     Button {
                         dismiss()
                     } label: {
                         Text("Confirm Challenge")
                             .font(.headline)
-                            .padding(.vertical, 14)
+                            .padding(.vertical, 20)
                             .frame(maxWidth: .infinity)
                             .background(Color.green)
                             .foregroundColor(.white)
-                            .cornerRadius(20)
+                            .clipShape(.capsule)
+                            .glassEffect(.regular.interactive(), in:.capsule)
                     }
-                    .padding(.horizontal, 24)
                 } else {
                     Button {
                         drawChallenge()
                     } label: {
                         Text("Draw your Challenge")
                             .font(.headline)
-                            .padding(.vertical, 14)
+                            .padding(.vertical, 20)
                             .frame(maxWidth: .infinity)
                             .background(isShuffling ? Color.orange : Color.gray.opacity(0.4))
                             .foregroundColor(.white)
-                            .cornerRadius(20)
+                            .clipShape(.capsule)
+                            .glassEffect(.regular.interactive(), in:.capsule)
                     }
-                    .padding(.horizontal, 24)
                     .disabled(!isShuffling)
                 }
-                
-                ShufflingDeckView(isShuffling: isShuffling)
-                    .frame(height: 260)
-                    .padding(.bottom, 24)
+               
             }
             .padding(.horizontal, 24)
         }
