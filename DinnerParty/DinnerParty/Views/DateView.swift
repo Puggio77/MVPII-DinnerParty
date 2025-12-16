@@ -16,6 +16,7 @@ struct DateView: View {
     var body: some View {
         NavigationStack {
             HStack(spacing: 50) {
+                
                     Button() {
                         isPresented.toggle()
                     } label: {
@@ -45,9 +46,11 @@ struct DateView: View {
                 DatePicker(
                     "Start Date",
                     selection: $eventDate,
-                    displayedComponents: [.date]
+                    in: Date.now..., displayedComponents: [.date]
                 )
                 .datePickerStyle(.graphical)
+
+
             
                 Divider()
                 .padding(.horizontal)

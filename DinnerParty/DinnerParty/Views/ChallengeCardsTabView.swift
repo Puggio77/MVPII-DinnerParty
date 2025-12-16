@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-struct ChallengeCardsScrollView: View {
+import SwiftUI
+
+struct ChallengeCardsTabView: View {
     let eventID: UUID
     let courseType: String
     
@@ -22,22 +24,19 @@ struct ChallengeCardsScrollView: View {
             let courseCount = event.courseCount(for: courseType)
             let claimedForCourse = event.claimedChallenges[courseType] ?? []
             
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
-                    ForEach(0..<courseCount, id: \.self) { index in
-                        if index < claimedForCourse.count {
-                            ClaimedChallengeCardView(claimed: claimedForCourse[index])
-                        } else {
-                            UnclaimedChallengeCardView(
-                                eventID: eventID,
-                                courseType: courseType
-                            )
-                        }
+            TabView {
+                ForEach(0..<courseCount, id: \.self) { index in
+                    if index < claimedForCourse.count {
+                        ClaimedChallengeCardView(claimed: claimedForCourse[index])
+                    } else {
+                        UnclaimedChallengeCardView(
+                            eventID: eventID,
+                            courseType: courseType
+                        )
                     }
                 }
-                .padding(.horizontal, 16)
             }
-            .frame(height: 300)
+            .tabViewStyle(.page)
         }
     }
 }
@@ -55,14 +54,12 @@ struct ClaimedChallengeCardView: View {
                         .stroke(Color.yellow, lineWidth: 3)
                 )
             
-            VStack(spacing: 16) {
+            VStack(spacing: 70) {
                 Text(claimed.challengeText)
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(Color(.systemBrown))
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, 20)
-                
-                Spacer()
+    
                 
                 VStack(spacing: 4) {
                     Text("Claimed by")
@@ -72,9 +69,10 @@ struct ClaimedChallengeCardView: View {
                         .font(.headline)
                 }
             }
-            .padding(.vertical, 28)
+            .padding(.vertical, 50)
+            .padding(.horizontal, 30)
         }
-        .frame(width: 250, height: 280)
+        .frame(width: 300, height: 350)
     }
 }
 
@@ -88,27 +86,27 @@ struct UnclaimedChallengeCardView: View {
                 .fill(Color.white)
                 .shadow(color: Color.black.opacity(0.06), radius: 16, x: 0, y: 8)
             
-            VStack(spacing: 20) {
+            VStack(spacing: 70) {
                 Text("Draw a card to\nreveal")
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(Color(.systemBrown))
                     .multilineTextAlignment(.center)
                 
+            
                 NavigationLink {
                     DrawChallengeView(eventID: eventID, courseType: courseType)
                 } label: {
                     Text("Claim")
                         .font(.headline)
-                        .frame(width: 180)
-                        .padding(.vertical, 14)
-                        .background(Color.orange)
+                        .padding(.vertical, 20)
+                        .padding(.horizontal, 100)
+                        .background(.amberGlow, in: .capsule)
                         .foregroundColor(.white)
-                        .cornerRadius(26)
-                        .shadow(color: Color.orange.opacity(0.25), radius: 10, x: 0, y: 6)
+                        .glassEffect(.regular.interactive())
                 }
             }
-            .padding(.vertical, 28)
+            .padding(.vertical, 50)
         }
-        .frame(width: 250, height: 280)
+        .frame(width: 300, height: 350)
     }
 }

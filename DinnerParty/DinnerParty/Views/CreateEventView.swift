@@ -115,11 +115,14 @@ struct CreateEventView: View {
                             .padding(.vertical, 20)
                             .frame(maxWidth: .infinity)
                             .foregroundStyle(.white)
-                            .background(eventTitle.isEmpty ? Color.gray : .amberGlow)
+                            .background((eventTitle.isEmpty || eventLocation.isEmpty || !hasSelectedDate || (appetisers == 0 && mainDishes == 0 && dessert == 0 && sideDishes == 0)) ? Color.gray : .amberGlow)
                             .clipShape(.capsule)
                             .glassEffect(.regular.interactive(), in: .capsule)
                     }
                     .disabled(eventTitle.isEmpty)
+                    .disabled(eventLocation.isEmpty)
+                    .disabled(!hasSelectedDate)
+                    .disabled(appetisers == 0 && mainDishes == 0 && dessert == 0 && sideDishes == 0)
                     .padding(.bottom, 20)
                 }
                 .padding(.top, 20)

@@ -17,56 +17,51 @@ struct CountdownTimerView: View {
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
-        HStack(spacing: 15) {
-            TimeUnitView(value: timeRemaining.hours, unit: "Hours", showColon: true)
-            Text(":")
-                .font(.system(size: 40, weight: .light, design: .serif))
-                .foregroundColor(.primary)
-                .offset(y: -15)
-            TimeUnitView(value: timeRemaining.minutes, unit: "Minutes", showColon: false)
-            Text(":")
-                .font(.system(size: 40, weight: .light, design: .serif))
-                .foregroundColor(.primary)
-                .offset(y: -15)
-            TimeUnitView(value: timeRemaining.seconds, unit: "Seconds", showColon: true)
+            HStack(spacing: 15) {
+                TimeUnitView(value: timeRemaining.days, unit: "Days", showColon: true)
+                Text(":")
+                    .font(.system(size: 34, weight: .semibold))
+                    .offset(y: -15)
+                TimeUnitView(value: timeRemaining.hours, unit: "Hours", showColon: false)
+                Text(":")
+                    .font(.system(size: 34, weight: .semibold))
+                    .offset(y: -15)
+                TimeUnitView(value: timeRemaining.minutes, unit: "Minutes", showColon: true)
+            }
+            .onAppear {
+                updateTimeRemaining()
+            }
+            .onReceive(timer) { _ in
+                updateTimeRemaining()
+            }
         }
-        .onAppear {
-            updateTimeRemaining()
-        }
-        .onReceive(timer) { _ in
-            updateTimeRemaining()
-        }
-    }
-    
-    private func updateTimeRemaining() {
-        withAnimation(.snappy(duration: 0.3)) {
+        
+        private func updateTimeRemaining() {
             timeRemaining = calculateTimeRemaining(until: eventDate)
         }
-    }
-    
-    private func calculateTimeRemaining(until date: Date) -> TimeComponents {
-        let now = Date()
-        let difference = date.timeIntervalSince(now)
         
-        // return zeros if the event has passed
-        guard difference > 0 else {
-            return TimeComponents(days: 0, hours: 0, minutes: 0, seconds: 0)
+        private func calculateTimeRemaining(until date: Date) -> TimeComponents {
+            let now = Date()
+            let difference = date.timeIntervalSince(now)
+            
+            // return zeros if the event has passed
+            guard difference > 0 else {
+                return TimeComponents(days: 0, hours: 0, minutes: 0)
+            }
+            
+            let totalSeconds = Int(difference)
+            
+            let days = totalSeconds / 86400  // 60 * 60 * 24
+            let remainingAfterDays = totalSeconds % 86400
+            
+            let hours = remainingAfterDays / 3600  // 60 * 60
+            let remainingAfterHours = remainingAfterDays % 3600
+            
+            let minutes = remainingAfterHours / 60
+            
+            return TimeComponents(days: days, hours: hours, minutes: minutes)
         }
-        
-        let totalSeconds = Int(difference)
-        
-        let days = totalSeconds / 86400  // 60 * 60 * 24
-        let remainingAfterDays = totalSeconds % 86400
-        
-        let hours = remainingAfterDays / 3600  // 60 * 60
-        let remainingAfterHours = remainingAfterDays % 3600
-        
-        let minutes = remainingAfterHours / 60
-        let seconds = remainingAfterHours % 60
-        
-        return TimeComponents(days: days, hours: hours, minutes: minutes, seconds: seconds)
     }
-}
 
 // MARK: Individual Time Unit Display
 struct TimeUnitView: View {
