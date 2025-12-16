@@ -15,9 +15,9 @@ struct EventDetailView: View {
         eventManager.getEvent(by: eventID)
     }
 
-    @State private var selectedCourse = "Main Course"
+    @State private var selectedCourse = "Main Dishes"
     private let courses = [
-        "Main Course", "Starters", "Side Dishes", "Desserts", "Drinks",
+        "Appetizers", "Main Dishes", "Desserts", "Side Dishes",
     ]
 
     var body: some View {
@@ -90,62 +90,17 @@ struct EventDetailView: View {
                 .glassEffect(.regular.interactive())
                 .padding(.top, 8)
 
-                //MARK: Challenge card section
-                RoundedRectangle(cornerRadius: 28)
-                    .fill(Color.white)
-
-                    .overlay(
-                        VStack(spacing: 24) {
-                            Spacer()
-                            Text("Draw a card to reveal the challenge")
-                                .font(
-                                    .system(
-                                        size: 22,
-                                        weight: .semibold,
-                                        design: .serif
-                                    )
-                                )
-                                .padding()
-                                .multilineTextAlignment(.center)
-                            Spacer()
-                            NavigationLink {
-                                DrawChallengeView(eventID: eventID, courseType: selectedCourse)
-                            } label: {
-                                Text("Claim")
-                                    .font(.headline)
-                                    .padding(.vertical, 20)
-                                    .padding(.horizontal, 100)
-                                    .background(.amberGlow, in: .capsule)
-                                    .foregroundColor(.white)
-                                    .glassEffect(.regular.interactive())
-                            }
-                        }
-                        .padding(.vertical, 32)
-                    )
-                    .frame(height: 350)
-                    .padding(.horizontal, 8)
-
-                // MARK: Page indicator dots
-                // ONLY A PLACEHOLDER, use TabView() in the future
-                HStack(spacing: 8) {
-                    ForEach(0..<4) { index in
-                        Circle()
-                            .fill(
-                                index == 1
-                                    ? Color(
-                                        red: 0.3,
-                                        green: 0.25,
-                                        blue: 0.2
-                                    ) : Color.gray.opacity(0.4)
-                            )
-                            .frame(width: 8, height: 8)
-                    }
-                }
-                .padding(.top, 8)
-
+    
+                // MARK: Challenge cards TabView
+                ChallengeCardsTabView(eventID: eventID, courseType: selectedCourse)
+                    .frame(height: 460)
+                    .indexViewStyle(.page(backgroundDisplayMode: .always))
+                    .padding(.top, -45)  
+                
                 Spacer()
             }
             .padding(.horizontal, 16)
+            
         }
     }
 
