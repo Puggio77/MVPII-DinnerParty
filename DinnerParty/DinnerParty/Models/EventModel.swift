@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Event: Identifiable {
+struct Event: Identifiable, Codable {
     let id: UUID
     var title: String
     var date: Date
@@ -20,6 +20,8 @@ struct Event: Identifiable {
     var mainDishes: Int
     var desserts: Int
     var sideDishes: Int
+    
+    var claimedChallenges: [String: [ClaimedChallenge]] = [:]
     
     // Computed property for the full event date/time
     var eventDateTime: Date {
@@ -60,9 +62,19 @@ struct Event: Identifiable {
         self.desserts = desserts
         self.sideDishes = sideDishes
     }
+    
+    func courseCount(for courseType: String) -> Int {
+            switch courseType {
+            case "Appetizers": return appetizers
+            case "Main Dishes": return mainDishes
+            case "Desserts": return desserts
+            case "Side Dishes": return sideDishes
+            default: return 0
+            }
+        }
 }
 
-// MARK: - Sample Data for Testing
+// MARK: Testing
 extension Event {
     static let sampleEvent = Event(
         title: "Friendsgiving Dinner",

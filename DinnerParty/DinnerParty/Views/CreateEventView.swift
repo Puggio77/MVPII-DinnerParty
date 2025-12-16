@@ -10,7 +10,11 @@ import SwiftUI
 
 struct CreateEventView: View {
     
+    @ObservedObject private var eventManager = EventManager.shared
+    @Environment(\.dismiss) var dismiss
+    
     @State private var eventTitle = ""
+    @State private var eventLocation = ""
     @State private var showDatePicker = false
     @State private var selectedDate = Date()
     
@@ -26,6 +30,19 @@ struct CreateEventView: View {
                 // MARK: - Event Title Input
                 TextField("", text: $eventTitle,
                           prompt: Text("Event Title").foregroundColor(.gray)
+                )
+                .font(.system(size: 17))
+                .padding()
+                .frame(height: 55)
+                .background(Color.white)
+                .cornerRadius(25)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 40)
+                .shadow(color: .gray.opacity(0.25), radius: 5, y: 3)
+                
+                // MARK: - Location Input
+                TextField("", text: $eventLocation,
+                          prompt: Text("Event Location").foregroundColor(.gray)
                 )
                 .font(.system(size: 17))
                 .padding()
@@ -61,50 +78,70 @@ struct CreateEventView: View {
                         .padding(.bottom, 10)
                     
                     VStack(spacing: 12) {
-                        HStack{
-                            Text("Apetisers")
-                            CourseStepperView()
-                        }
-                        HStack{
-                            Text("Main Dishes")
-                            CourseStepperView()
-                        }
-                        HStack{
-                            Text("Desserts")
-                            CourseStepperView()
-                        }
-                        HStack{
-                            Text("Side Dishes")
-                            CourseStepperView()
-                        }
+                        CourseCounter(title: "Appetizers", count: $appetisers)
+                        CourseCounter(title: "Main Dishes", count: $mainDishes)
+                        CourseCounter(title: "Desserts", count: $dessert)
+                        CourseCounter(title: "Side Dishes", count: $sideDishes)
                     }
                 }
                 .padding(.horizontal, 30)
                 
-                NavigationLink{
-                    EventDetailView(event: Event.sampleEvent)
+                // MARK: - Add Event Button
+                Button {
+                    createAndNavigateToEvent()
                 } label: {
                     Text("Add Event")
                         .font(.system(size: 17, weight: .semibold))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color("AmberGlow"))
+                        .background(eventTitle.isEmpty ? Color.gray : Color("AmberGlow"))
                         .cornerRadius(30)
                 }
                 .padding(.horizontal, 40)
+                .disabled(eventTitle.isEmpty)
                 
                 Spacer()
             }
             
             .sheet(isPresented: $showDatePicker) {
                 DatePickerSheet(selectedDate: $selectedDate, isVisible: $showDatePicker)
-            }.navigationTitle("Create an Event")
+            }
+            .navigationTitle("Create an Event")
         }
     }
     
+    // MARK: - Create Event Function
+    private func createAndNavigateToEvent() {
+        // Extract date and time components
+        let calendar = Calendar.current
+        let dateComponents = calendar.dateComponents([.year, .month, .day], from: selectedDate)
+        let timeComponents = calendar.dateComponents([.hour, .minute], from: selectedDate)
+        
+        // Create separate Date objects for date and time
+        let eventDate = calendar.date(from: dateComponents) ?? Date()
+        let eventTime = calendar.date(from: timeComponents) ?? Date()
+        
+        // Create the new event
+        let newEvent = Event(
+            title: eventTitle,
+            date: eventDate,
+            time: eventTime,
+            location: eventLocation.isEmpty ? "To be determined" : eventLocation,
+            hostName: "You",  // TODO: Get from user profile
+            appetizers: appetisers,
+            mainDishes: mainDishes,
+            desserts: dessert,
+            sideDishes: sideDishes
+        )
+        
+        // Add to event manager
+        eventManager.addEvent(newEvent)
+        
+        // Dismiss view
+        dismiss()
+    }
 }
-
 #Preview {
     CreateEventView()
     
