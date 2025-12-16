@@ -138,11 +138,10 @@ struct CreateEventView: View {
                     selectedDate: $selectedDate,
                     isVisible: $showDatePicker
                 )
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.hidden)
-                .onDisappear {
-                    hasSelectedDate = true
-                }
+                .presentationDetents([.fraction(0.6), .large])
+            }
+            .onChange(of: selectedDate) {
+                hasSelectedDate = true
             }
         }
     }
