@@ -10,67 +10,100 @@ import Combine
 
 struct DrawChallengeView: View {
     
-    @StateObject private var viewModel = CardChallengeViewModel()
+    let eventID: UUID
+    let courseType: String
+    
+    @ObservedObject private var viewModel = CardChallengeViewModel.shared
+    @ObservedObject private var eventManager = EventManager.shared
     
     @State private var isShuffling = true
     @State private var showChallenge = false
+    @State private var userName: String = "You" // TODO: Get from user profile/CloudKit
+    
+    @Environment(\.dismiss) var dismiss
+    
+    private var event: Event? {
+        eventManager.getEvent(by: eventID)
+    }
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Color(.systemGray6)
-                    .ignoresSafeArea()
+        ZStack {
+            Color(.systemGray6)
+                .ignoresSafeArea()
+            
+            VStack(spacing: 32) {
                 
-                VStack(spacing: 32) {
-
-                    
-                    // Card centrale
-                    ZStack {
-                        if let challenge = viewModel.currentCard, showChallenge {
-                            ChallengeCardView(text: challenge.challenge)
-                                .transition(.asymmetric(
-                                    insertion: .scale.combined(with: .opacity),
-                                    removal: .opacity
-                                ))
-                        } else {
-                            ChallengeCardView(text: "")
-                                .opacity(0)
-                        }
+                ZStack {
+                    if let challenge = viewModel.currentCard, showChallenge {
+                        ChallengeCardView(text: challenge.challenge)
+                            .transition(.asymmetric(
+                                insertion: .scale.combined(with: .opacity),
+                                removal: .opacity
+                            ))
+                    } else {
+                        ChallengeCardView(text: "")
+                            .opacity(0)
                     }
-                    .frame(maxHeight: .infinity)
-                    
+                }
+                .frame(maxHeight: .infinity)
+                
+                
+                ShufflingDeckView(isShuffling: isShuffling)
+                    .frame(height: 260)
+                    .padding(.bottom, 24)
+                if showChallenge {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text("Confirm Challenge")
+                            .font(.headline)
+                            .padding(.vertical, 20)
+                            .frame(maxWidth: .infinity)
+                            .background(Color.green)
+                            .foregroundColor(.white)
+                            .clipShape(.capsule)
+                            .glassEffect(.regular.interactive(), in:.capsule)
+                    }
+                } else {
                     Button {
                         drawChallenge()
                     } label: {
                         Text("Draw your Challenge")
                             .font(.headline)
-                            .padding(.vertical, 14)
+                            .padding(.vertical, 20)
                             .frame(maxWidth: .infinity)
                             .background(isShuffling ? Color.orange : Color.gray.opacity(0.4))
                             .foregroundColor(.white)
-                            .cornerRadius(20)
+                            .clipShape(.capsule)
+                            .glassEffect(.regular.interactive(), in:.capsule)
                     }
-                    .padding(.horizontal, 24)
                     .disabled(!isShuffling)
-                    
-                    ShufflingDeckView(isShuffling: isShuffling)
-                        .frame(height: 260)
-                        .padding(.bottom, 24)
                 }
-                .padding(.horizontal, 24)
+               
             }
-            .onAppear {
-                isShuffling = true
-                showChallenge = false
-                viewModel.currentCard = nil
-            }
-            .navigationTitle("Draw your challenge")
+            .padding(.horizontal, 24)
         }
+        .onAppear {
+            isShuffling = true
+            showChallenge = false
+            viewModel.currentCard = nil
+        }
+        .navigationTitle("Draw for \(courseType)")
     }
     
     private func drawChallenge() {
+        guard var event = event else { return }
+        
         withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-            viewModel.drawRandomCard()
+            _ = viewModel.drawAndClaimChallenge(
+                for: &event,
+                courseType: courseType,
+                claimedBy: userName
+            )
+            
+            // Save the updated event
+            eventManager.updateEvent(event)
+            
             showChallenge = true
             isShuffling = false
         }
@@ -78,5 +111,5 @@ struct DrawChallengeView: View {
 }
 
 #Preview {
-    DrawChallengeView()
+    DrawChallengeView(eventID: Event.sampleEvent.id, courseType: "Main Dishes")
 }

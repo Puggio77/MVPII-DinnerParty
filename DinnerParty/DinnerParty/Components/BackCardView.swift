@@ -14,9 +14,9 @@ struct BackCardView: View {
             .scaledToFill()
             .frame(maxWidth: .infinity)
             .aspectRatio(3/4, contentMode: .fit)
-            .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 32, style: .continuous)
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
                     .stroke(Color.warmCream, lineWidth: 5)
             )
     }

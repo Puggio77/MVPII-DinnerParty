@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct EventDetailView: View {
-    let event: Event
-
-    private let viewModel = CardChallengeViewModel()
+    let eventID: UUID
+    @ObservedObject private var eventManager = EventManager.shared
+    
+    private var event: Event? {
+        eventManager.getEvent(by: eventID)
+    }
 
     @State private var selectedCourse = "Main Course"
     private let courses = [
@@ -18,123 +21,131 @@ struct EventDetailView: View {
     ]
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Color(red: 0.94, green: 0.93, blue: 0.91)
-                    .ignoresSafeArea()
-
-                VStack(spacing: 24) {
-
-                    // MARK: Event info section
-                    VStack(spacing: 8) {
-                        Text(event.title)
-                            .font(.largeTitle.bold())
-                            .foregroundStyle(
-                                Color(red: 0.25, green: 0.15, blue: 0.1)
-                            )
-
-                        Text(formatEventDateTime(event.eventDateTime))
-                            .font(.title3.bold())
-                            .foregroundColor(.secondary)
-
-                        HStack(spacing: 4) {
-                            Image(systemName: "mappin.and.ellipse")
-                                .font(.headline)
-                            Text(event.location)
-                                .font(.title3)
-                        }
-                        .foregroundStyle(.secondary)
-                    }
-                    .fontDesign(.serif)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.top, 16)
-
-                    // MARK: Countdown Timer
-                    CountdownTimerView(eventDate: event.eventDateTime)
-                        .padding(.top, 8)
-
-                    // MARK: course picker section
-                    Menu {
-                        ForEach(courses, id: \.self) { course in
-                            Button(course) {
-                                selectedCourse = course
-                            }
-                        }
-                    } label: {
-                        HStack(spacing: 8) {
-                            Text(selectedCourse)
-
-                            Image(systemName: "chevron.up.chevron.down")
-                        }
-                        .foregroundColor(.primary)
-                        .fontDesign(.serif)
-                        .padding(.vertical, 12)
-                        .padding(.horizontal, 20)
-                    }
-                    
-//                    .background(.white.opacity(0.5), in: .capsule)
-                    .glassEffect(.regular.interactive())
-                    .padding(.top, 8)
-
-                    //MARK: Challenge card section
-                    RoundedRectangle(cornerRadius: 28)
-                        .fill(Color.white)
-
-                        .overlay(
-                            VStack(spacing: 24) {
-                                Spacer()
-                                Text("Draw a card to reveal the challenge")
-                                    .font(
-                                        .system(
-                                            size: 22,
-                                            weight: .semibold,
-                                            design: .serif
-                                        )
-                                    )
-                                    .padding()
-                                    .multilineTextAlignment(.center)
-                                Spacer()
-                                NavigationLink {
-                                    DrawChallengeView()
-                                } label: {
-                                    Text("Claim")
-                                        .font(.headline)
-                                        .padding(.vertical, 20)
-                                        .padding(.horizontal, 100)
-                                        .background(.amberGlow, in: .capsule)
-                                        .foregroundColor(.white)
-                                        .glassEffect(.regular.interactive())
-                                }
-                            }
-                            .padding(.vertical, 32)
-                        )
-                        .frame(height: 350)
-                        .padding(.horizontal, 8)
-
-                    // MARK: Page indicator dots
-                    // ONLY A PLACEHOLDER, use TabView() in the future
-                    HStack(spacing: 8) {
-                        ForEach(0..<4) { index in
-                            Circle()
-                                .fill(
-                                    index == 1
-                                        ? Color(
-                                            red: 0.3,
-                                            green: 0.25,
-                                            blue: 0.2
-                                        ) : Color.gray.opacity(0.4)
-                                )
-                                .frame(width: 8, height: 8)
-                        }
-                    }
-                    .padding(.top, 8)
-
-                    Spacer()
-                }
-                .padding(.horizontal, 16)
+        Group {
+            if let event = event {
+                eventContent(event)
+            } else {
+                Text("Event not found")
+                    .foregroundColor(.secondary)
             }
-            .navigationTitle("Event Detail")
-            .navigationBarTitleDisplayMode(.inline)
+        }
+        .navigationTitle("Event Detail")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    @ViewBuilder
+    private func eventContent(_ event: Event) -> some View {
+        ZStack {
+            Color(red: 0.94, green: 0.93, blue: 0.91)
+                .ignoresSafeArea()
+
+            VStack(spacing: 24) {
+
+                // MARK: Event info section
+                VStack(spacing: 8) {
+                    Text(event.title)
+                        .font(.largeTitle.bold())
+                        .foregroundStyle(
+                            Color(red: 0.25, green: 0.15, blue: 0.1)
+                        )
+
+                    Text(formatEventDateTime(event.eventDateTime))
+                        .font(.title3.bold())
+                        .foregroundColor(.secondary)
+
+                    HStack(spacing: 4) {
+                        Image(systemName: "mappin.and.ellipse")
+                            .font(.headline)
+                        Text(event.location)
+                            .font(.title3)
+                    }
+                    .foregroundStyle(.secondary)
+                }
+                .fontDesign(.serif)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, 16)
+
+                // MARK: Countdown Timer
+                CountdownTimerView(eventDate: event.eventDateTime)
+                    .padding(.top, 8)
+
+                // MARK: course picker section
+                Menu {
+                    ForEach(courses, id: \.self) { course in
+                        Button(course) {
+                            selectedCourse = course
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 8) {
+                        Text(selectedCourse)
+
+                        Image(systemName: "chevron.up.chevron.down")
+                    }
+                    .foregroundColor(.primary)
+                    .fontDesign(.serif)
+                    .padding(.vertical, 12)
+                    .padding(.horizontal, 20)
+                }
+                .glassEffect(.regular.interactive())
+                .padding(.top, 8)
+
+                //MARK: Challenge card section
+                RoundedRectangle(cornerRadius: 28)
+                    .fill(Color.white)
+
+                    .overlay(
+                        VStack(spacing: 24) {
+                            Spacer()
+                            Text("Draw a card to reveal the challenge")
+                                .font(
+                                    .system(
+                                        size: 22,
+                                        weight: .semibold,
+                                        design: .serif
+                                    )
+                                )
+                                .padding()
+                                .multilineTextAlignment(.center)
+                            Spacer()
+                            NavigationLink {
+                                DrawChallengeView(eventID: eventID, courseType: selectedCourse)
+                            } label: {
+                                Text("Claim")
+                                    .font(.headline)
+                                    .padding(.vertical, 20)
+                                    .padding(.horizontal, 100)
+                                    .background(.amberGlow, in: .capsule)
+                                    .foregroundColor(.white)
+                                    .glassEffect(.regular.interactive())
+                            }
+                        }
+                        .padding(.vertical, 32)
+                    )
+                    .frame(height: 350)
+                    .padding(.horizontal, 8)
+
+                // MARK: Page indicator dots
+                // ONLY A PLACEHOLDER, use TabView() in the future
+                HStack(spacing: 8) {
+                    ForEach(0..<4) { index in
+                        Circle()
+                            .fill(
+                                index == 1
+                                    ? Color(
+                                        red: 0.3,
+                                        green: 0.25,
+                                        blue: 0.2
+                                    ) : Color.gray.opacity(0.4)
+                            )
+                            .frame(width: 8, height: 8)
+                    }
+                }
+                .padding(.top, 8)
+
+                Spacer()
+            }
+            .padding(.horizontal, 16)
         }
     }
 
@@ -147,5 +158,5 @@ struct EventDetailView: View {
 }
 
 #Preview {
-    EventDetailView(event: Event.sampleEvent)
+    EventDetailView(eventID: Event.sampleEvent.id)
 }

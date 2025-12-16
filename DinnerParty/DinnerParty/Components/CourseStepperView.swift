@@ -1,5 +1,5 @@
 //
-//  CourseRowView.swift
+//  CourseStepperView.swift
 //  DinnerParty
 //
 //  Created by Son Cao on 15/12/25.
@@ -8,7 +8,7 @@
 import SwiftUI
 
 // MARK: - Course Row View
-struct CourseRowView: View {
+struct CourseStepperView: View {
     let title: String
     @Binding var value: Int
     let range = 0...10
@@ -81,6 +81,6 @@ struct CourseRowView: View {
 
 #Preview {
     @Previewable @State var value: Int = 0
-    CourseRowView(title: "Appetiser", value: $value)
+    CourseStepperView(title: "Appetiser", value: $value)
         .padding(.horizontal, 20)
 }

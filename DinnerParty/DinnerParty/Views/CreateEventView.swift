@@ -10,7 +10,11 @@ import SwiftUI
 
 struct CreateEventView: View {
 
+    @ObservedObject private var eventManager = EventManager.shared
+    @Environment(\.dismiss) var dismiss
+
     @State private var eventTitle = ""
+    @State private var eventLocation = ""
     @State private var showDatePicker = false
     @State private var selectedDate = Date()
     @State private var hasSelectedDate = false
@@ -49,6 +53,19 @@ struct CreateEventView: View {
                     .background(in: Capsule())
                     .multilineTextAlignment(.center)
 
+                    // MARK: - Location Input
+                    TextField(
+                        "",
+                        text: $eventLocation,
+                        prompt: Text("Event Location")
+                            .foregroundStyle(.primary)
+                    )
+                    .font(.title3.bold())
+                    .padding(.vertical, 25)
+                    .frame(maxWidth: .infinity)
+                    .background(in: Capsule())
+                    .multilineTextAlignment(.center)
+
                     // MARK: - Date Button
                     Button {
                         showDatePicker.toggle()
@@ -57,21 +74,15 @@ struct CreateEventView: View {
                             Image(systemName: "calendar")
                             Text(
                                 hasSelectedDate
-                                    ? dateFormatter.string(
-                                        from: selectedDate
-                                    )
+                                    ? dateFormatter.string(from: selectedDate)
                                     : "Date and Time"
                             )
-
                         }
                         .font(.headline)
                         .foregroundStyle(.white)
-                        .font(.headline)
                         .padding(.vertical, 25)
-                        .frame(maxWidth: .infinity).background(
-                            .amberGlow,
-                            in: Capsule()
-                        )
+                        .frame(maxWidth: .infinity)
+                        .background(.amberGlow, in: Capsule())
                         .glassEffect(.regular.interactive(), in: .capsule)
                     }
 
@@ -83,48 +94,39 @@ struct CreateEventView: View {
                             .padding(.top, 8)
 
                         VStack(spacing: 12) {
-                            CourseRowView(
-                                title: "Appetisers",
-                                value: $appetisers
-                            )
-                            CourseRowView(
-                                title: "Mains",
-                                value: $mainDishes
-                            )
-                            CourseRowView(title: "Dessert", value: $dessert)
-                            CourseRowView(
-                                title: "Side Dishes",
-                                value: $sideDishes
-                            )
+                            CourseStepperView(title: "Appetizers", value: $appetisers)
+                            CourseStepperView(title: "Main Dishes", value: $mainDishes)
+                            CourseStepperView(title: "Desserts", value: $dessert)
+                            CourseStepperView(title: "Side Dishes", value: $sideDishes)
                         }
                         .padding()
                         .background(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
-
                     }
 
                     Spacer()
 
                     // MARK: - Add Event Button
-                    NavigationLink {
-                        EventDetailView(event: Event.sampleEvent)
+                    Button {
+                        createAndNavigateToEvent()
                     } label: {
                         Text("Add Event")
                             .font(.headline)
                             .padding(.vertical, 20)
                             .frame(maxWidth: .infinity)
                             .foregroundStyle(.white)
-                            .background(.amberGlow)
+                            .background(eventTitle.isEmpty ? Color.gray : .amberGlow)
                             .clipShape(.capsule)
                             .glassEffect(.regular.interactive(), in: .capsule)
                     }
+                    .disabled(eventTitle.isEmpty)
                     .padding(.bottom, 20)
                 }
                 .padding(.top, 20)
                 .padding(.horizontal, 20)
             }
             .navigationTitle("Create new event")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showDatePicker) {
                 DatePickerSheet(
                     selectedDate: $selectedDate,
@@ -137,6 +139,37 @@ struct CreateEventView: View {
                 }
             }
         }
+    }
+
+    // MARK: - Create Event Function
+    private func createAndNavigateToEvent() {
+        // Extract date and time components
+        let calendar = Calendar.current
+        let dateComponents = calendar.dateComponents([.year, .month, .day], from: selectedDate)
+        let timeComponents = calendar.dateComponents([.hour, .minute], from: selectedDate)
+
+        // Create separate Date objects for date and time
+        let eventDate = calendar.date(from: dateComponents) ?? Date()
+        let eventTime = calendar.date(from: timeComponents) ?? Date()
+
+        // Create the new event
+        let newEvent = Event(
+            title: eventTitle,
+            date: eventDate,
+            time: eventTime,
+            location: eventLocation.isEmpty ? "To be determined" : eventLocation,
+            hostName: "You",  // TODO: Get from user profile
+            appetizers: appetisers,
+            mainDishes: mainDishes,
+            desserts: dessert,
+            sideDishes: sideDishes
+        )
+
+        // Add to event manager
+        eventManager.addEvent(newEvent)
+
+        // Dismiss view
+        dismiss()
     }
 }
 

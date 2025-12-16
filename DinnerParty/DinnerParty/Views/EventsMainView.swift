@@ -8,20 +8,10 @@
 import SwiftUI
 
 struct EventsMainView: View {
+    
+    @ObservedObject private var eventManager = EventManager.shared
     @State var isOpen: Bool = false
     
-    // MARK: Sample events, modify once data source is set up
-    @State var events: [Event] = sampleEvents
-
-    // Filter events into upcoming and past
-    var upcomingEvents: [Event] {
-        events.filter { $0.eventDateTime >= Date() }
-    }
-
-    var pastEvents: [Event] {
-        events.filter { $0.eventDateTime < Date() }
-    }
-
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -36,7 +26,7 @@ struct EventsMainView: View {
 
                             ForEach(upcomingEvents) { event in
                                 NavigationLink {
-                                    EventDetailView(event: event)
+                                    EventDetailView(eventID: event.id)
                                 } label: {
                                     EventCardView(
                                         event: event,
@@ -59,7 +49,7 @@ struct EventsMainView: View {
 
                             ForEach(pastEvents) { event in
                                 NavigationLink {
-                                    EventDetailView(event: event)
+                                    EventDetailView(eventID: event.id)
                                 } label: {
                                     EventCardView(
                                         event: event,
@@ -72,23 +62,34 @@ struct EventsMainView: View {
                         }
                     }
                 }
-                .padding(.vertical)
             }
-            .background(Color(.systemGroupedBackground))
             .navigationTitle("My Events")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
                         CreateEventView()
                     } label: {
-                        Button("Done", systemImage: "plus") {
-
-                        }
+                        Image(systemName: "plus")
                     }
-
                 }
             }
         }
+    }
+    
+    private var upcomingEvents: [Event] {
+        eventManager.events.filter { $0.eventDateTime > Date() }
+            .sorted { $0.eventDateTime < $1.eventDateTime }
+    }
+    
+    private var pastEvents: [Event] {
+        eventManager.events.filter { $0.eventDateTime <= Date() }
+            .sorted { $0.eventDateTime > $1.eventDateTime }
+    }
+    
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d, yyyy 'at' h:mm a"
+        return formatter.string(from: date)
     }
 }
 

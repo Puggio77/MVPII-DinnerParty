@@ -42,7 +42,7 @@ struct ChallengeCardView: View {
                 .rotationEffect(.degrees(23))
             
             Text(text)
-                .font(.system(.title, design: .serif))
+                .font(.system(.title2, design: .serif))
                 .fontWeight(.medium)
                 .foregroundStyle(.black)
                 .multilineTextAlignment(.center)

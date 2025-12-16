@@ -7,9 +7,14 @@
 
 import Foundation
 
-struct CardChallenge: Identifiable {
-    let id = UUID()
+struct CardChallenge: Identifiable, Codable {
+    let id: UUID
     var challenge: String
-    var img: String = "person.fill"
+    var img: String
+    
+    init(id: UUID = UUID(), challenge: String, img: String = "person.fill") {
+        self.id = id
+        self.challenge = challenge
+        self.img = img
+    }
 }
-
