@@ -38,96 +38,97 @@ struct CreateEventView: View {
                 Color(.systemGray6)
                     .ignoresSafeArea()
 
-                VStack(spacing: 15) {
+                ScrollView {
+                    VStack(spacing: 15) {
 
-                    // MARK: - Event Title Input
-                    TextField(
-                        "",
-                        text: $eventTitle,
-                        prompt: Text("Event Title")
-                            .foregroundStyle(.primary)
-                    )
-                    .font(.title.bold())
-                    .fontDesign(.serif)
-                    .padding(.vertical, 25)
-                    .frame(maxWidth: .infinity)
-                    .background(in: Capsule())
-                    .multilineTextAlignment(.center)
+                        // MARK: - Event Title Input
+                        TextField(
+                            "",
+                            text: $eventTitle,
+                            prompt: Text("Event Title")
+                                .foregroundStyle(.primary)
+                        )
+                        .font(.title.bold())
+                        .fontDesign(.serif)
+                        .padding(.vertical, 25)
+                        .frame(maxWidth: .infinity)
+                        .background(in: Capsule())
+                        .multilineTextAlignment(.center)
 
-                    // MARK: - Location Input
-                    TextField(
-                        "",
-                        text: $eventLocation,
-                        prompt: Text("Event Location")
-                            .foregroundStyle(.primary)
-                    )
-                    .font(.headline)
-                    .foregroundColor(.secondary)
-                    .padding(.vertical, 20)
-                    .frame(maxWidth: .infinity)
-                    .background(in: Capsule())
-                    .multilineTextAlignment(.center)
-
-                    // MARK: - Date Button
-                    Button {
-                        showDatePicker.toggle()
-                    } label: {
-                        HStack(spacing: 8) {
-                            Image(systemName: "calendar")
-                            Text(
-                                hasSelectedDate
-                                    ? dateFormatter.string(from: selectedDate)
-                                    : "Date and Time"
-                            )
-                        }
+                        // MARK: - Location Input
+                        TextField(
+                            "",
+                            text: $eventLocation,
+                            prompt: Text("Event Location")
+                                .foregroundStyle(.primary)
+                        )
                         .font(.headline)
-                        .foregroundStyle(.white)
+                        .foregroundColor(.secondary)
                         .padding(.vertical, 20)
                         .frame(maxWidth: .infinity)
-                        .background(.amberGlow, in: Capsule())
-                        .glassEffect(.regular.interactive(), in: .capsule)
-                    }
+                        .background(in: Capsule())
+                        .multilineTextAlignment(.center)
 
-                    // MARK: - Courses Section
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Courses")
-                            .font(.title.bold())
-                            .foregroundStyle(.black)
-                        
-                            .padding(.top, 8)
-                            .fontDesign(.serif)
-
-                        VStack(spacing: 12) {
-                            CourseStepperView(title: "Appetizers", value: $appetisers)
-                            CourseStepperView(title: "Main Dishes", value: $mainDishes)
-                            CourseStepperView(title: "Desserts", value: $dessert)
-                            CourseStepperView(title: "Side Dishes", value: $sideDishes)
-                        }
-                        .padding()
-                        .background(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                    }
-
-                    Spacer()
-
-                    // MARK: - Add Event Button
-                    Button {
-                        createAndNavigateToEvent()
-                    } label: {
-                        Text("Add Event")
+                        // MARK: - Date Button
+                        Button {
+                            showDatePicker.toggle()
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "calendar")
+                                Text(
+                                    hasSelectedDate
+                                        ? dateFormatter.string(from: selectedDate)
+                                        : "Date and Time"
+                                )
+                            }
                             .font(.headline)
+                            .foregroundStyle(.white)
                             .padding(.vertical, 20)
                             .frame(maxWidth: .infinity)
-                            .foregroundStyle(.white)
-                            .background(eventTitle.isEmpty ? Color.gray : .amberGlow)
-                            .clipShape(.capsule)
+                            .background(.amberGlow, in: Capsule())
                             .glassEffect(.regular.interactive(), in: .capsule)
+                        }
+
+                        // MARK: - Courses Section
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Courses")
+                                .font(.title.bold())
+                                .foregroundStyle(.black)
+                            
+                                .padding(.top, 8)
+                                .fontDesign(.serif)
+
+                            VStack(spacing: 12) {
+                                CourseStepperView(title: "Appetizers", value: $appetisers)
+                                CourseStepperView(title: "Main Dishes", value: $mainDishes)
+                                CourseStepperView(title: "Desserts", value: $dessert)
+                                CourseStepperView(title: "Side Dishes", value: $sideDishes)
+                            }
+                            .padding()
+                            .background(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                        }
+
+                        // MARK: - Add Event Button
+                        Button {
+                            createAndNavigateToEvent()
+                        } label: {
+                            Text("Add Event")
+                                .font(.headline)
+                                .padding(.vertical, 20)
+                                .frame(maxWidth: .infinity)
+                                .foregroundStyle(.white)
+                                .background(eventTitle.isEmpty ? Color.gray : .amberGlow)
+                                .clipShape(.capsule)
+                                .glassEffect(.regular.interactive(), in: .capsule)
+                        }
+                        .disabled(eventTitle.isEmpty)
+                        .padding(.bottom, 20)
                     }
-                    .disabled(eventTitle.isEmpty)
-                    .padding(.bottom, 20)
+                    .padding(.top, 20)
+                    .padding(.horizontal, 20)
                 }
-                .padding(.top, 20)
-                .padding(.horizontal, 20)
+                .scrollDismissesKeyboard(.interactively)
             }
             .navigationTitle("Create new event")
             

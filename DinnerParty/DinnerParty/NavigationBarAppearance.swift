@@ -7,7 +7,9 @@
 
 import UIKit
 
+
 enum NavigationBarAppearance {
+    /// This is needed because Apple doesn't easily font design changes to the Navigation Bar title
     /// Configures the navigation bar appearance with bold serif fonts for the entire app.
     /// Call this once at app launch (e.g., in the App struct's init).
     static func configure() {
