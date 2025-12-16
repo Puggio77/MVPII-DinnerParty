@@ -15,10 +15,20 @@ struct EventDetailView: View {
         eventManager.getEvent(by: eventID)
     }
 
-    @State private var selectedCourse = "Main Dishes"
-    private let courses = [
-        "Appetizers", "Main Dishes", "Desserts", "Side Dishes",
-    ]
+    private var availableCourses: [String] {
+        guard let event = event else { return [] }
+        
+        var courses: [String] = []
+        
+        if event.appetizers > 0 { courses.append("Appetizers") }
+        if event.mainDishes > 0 { courses.append("Main Dishes") }
+        if event.desserts > 0 { courses.append("Desserts") }
+        if event.sideDishes > 0 { courses.append("Side Dishes") }
+        
+        return courses
+    }
+    
+    @State private var selectedCourse: String?
 
     var body: some View {
         Group {
@@ -31,6 +41,11 @@ struct EventDetailView: View {
         }
         .navigationTitle("Event Detail")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            if selectedCourse == nil {
+                selectedCourse = availableCourses.first
+            }
+        }
     }
     
     @ViewBuilder
@@ -71,14 +86,14 @@ struct EventDetailView: View {
 
                 // MARK: course picker section
                 Menu {
-                    ForEach(courses, id: \.self) { course in
+                    ForEach(availableCourses, id: \.self) { course in
                         Button(course) {
                             selectedCourse = course
                         }
                     }
                 } label: {
                     HStack(spacing: 8) {
-                        Text(selectedCourse)
+                        Text(selectedCourse ?? "Select Course")
 
                         Image(systemName: "chevron.up.chevron.down")
                     }
@@ -92,10 +107,10 @@ struct EventDetailView: View {
 
     
                 // MARK: Challenge cards TabView
-                ChallengeCardsTabView(eventID: eventID, courseType: selectedCourse)
+                ChallengeCardsTabView(eventID: eventID, courseType: selectedCourse ?? "")
                     .frame(height: 460)
                     .indexViewStyle(.page(backgroundDisplayMode: .always))
-                    .padding(.top, -45)  
+                    .padding(.top, -45)
                 
                 Spacer()
             }
