@@ -21,6 +21,7 @@ struct EventsMainView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Upcoming")
                                 .font(.title2.bold())
+                                .fontDesign(.serif)
                                 .foregroundStyle(Color.amberGlow)
                                 .padding(.horizontal)
 

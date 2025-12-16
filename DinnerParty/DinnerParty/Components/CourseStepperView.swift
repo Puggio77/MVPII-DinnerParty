@@ -25,7 +25,8 @@ struct CourseStepperView: View {
     var body: some View {
         HStack {
             Text(title)
-                .font(.title3.bold())
+                .font(.title3)
+                .fontWeight(.medium)
                 .foregroundStyle(.primary)
 
             Spacer()

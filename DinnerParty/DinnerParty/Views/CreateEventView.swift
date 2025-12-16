@@ -38,7 +38,7 @@ struct CreateEventView: View {
                 Color(.systemGray6)
                     .ignoresSafeArea()
 
-                VStack(spacing: 20) {
+                VStack(spacing: 15) {
 
                     // MARK: - Event Title Input
                     TextField(
@@ -47,7 +47,8 @@ struct CreateEventView: View {
                         prompt: Text("Event Title")
                             .foregroundStyle(.primary)
                     )
-                    .font(.title3.bold())
+                    .font(.title.bold())
+                    .fontDesign(.serif)
                     .padding(.vertical, 25)
                     .frame(maxWidth: .infinity)
                     .background(in: Capsule())
@@ -60,8 +61,9 @@ struct CreateEventView: View {
                         prompt: Text("Event Location")
                             .foregroundStyle(.primary)
                     )
-                    .font(.title3.bold())
-                    .padding(.vertical, 25)
+                    .font(.headline)
+                    .foregroundColor(.secondary)
+                    .padding(.vertical, 20)
                     .frame(maxWidth: .infinity)
                     .background(in: Capsule())
                     .multilineTextAlignment(.center)
@@ -80,7 +82,7 @@ struct CreateEventView: View {
                         }
                         .font(.headline)
                         .foregroundStyle(.white)
-                        .padding(.vertical, 25)
+                        .padding(.vertical, 20)
                         .frame(maxWidth: .infinity)
                         .background(.amberGlow, in: Capsule())
                         .glassEffect(.regular.interactive(), in: .capsule)
@@ -89,9 +91,11 @@ struct CreateEventView: View {
                     // MARK: - Courses Section
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Courses")
-                            .font(.title2.bold())
-                            .foregroundStyle(.amberGlow)
+                            .font(.title.bold())
+                            .foregroundStyle(.black)
+                        
                             .padding(.top, 8)
+                            .fontDesign(.serif)
 
                         VStack(spacing: 12) {
                             CourseStepperView(title: "Appetizers", value: $appetisers)
@@ -126,6 +130,7 @@ struct CreateEventView: View {
                 .padding(.horizontal, 20)
             }
             .navigationTitle("Create new event")
+            
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showDatePicker) {
                 DatePickerSheet(
