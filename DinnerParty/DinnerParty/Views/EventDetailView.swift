@@ -10,24 +10,22 @@ import SwiftUI
 struct EventDetailView: View {
     let eventID: UUID
     @ObservedObject private var eventManager = EventManager.shared
-    
+
     private var event: Event? {
         eventManager.getEvent(by: eventID)
     }
 
     private var availableCourses: [String] {
         guard let event = event else { return [] }
-        
+
         var courses: [String] = []
-        
         if event.appetizers > 0 { courses.append("Appetizers") }
         if event.mainDishes > 0 { courses.append("Main Dishes") }
         if event.desserts > 0 { courses.append("Desserts") }
         if event.sideDishes > 0 { courses.append("Side Dishes") }
-        
         return courses
     }
-    
+
     @State private var selectedCourse: String?
 
     var body: some View {
@@ -41,13 +39,22 @@ struct EventDetailView: View {
         }
         .navigationTitle("Event Detail")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink {
+                    InvitePeopleView(eventID: eventID)
+                } label: {
+                    Text("Invite")
+                }
+            }
+        }
         .onAppear {
             if selectedCourse == nil {
                 selectedCourse = availableCourses.first
             }
         }
     }
-    
+
     @ViewBuilder
     private func eventContent(_ event: Event) -> some View {
         ZStack {
@@ -55,14 +62,10 @@ struct EventDetailView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 24) {
-
-                // MARK: Event info section
                 VStack(spacing: 8) {
                     Text(event.title)
                         .font(.largeTitle.bold())
-                        .foregroundStyle(
-                            Color(red: 0.25, green: 0.15, blue: 0.1)
-                        )
+                        .foregroundStyle(Color(red: 0.25, green: 0.15, blue: 0.1))
                         .fontDesign(.serif)
 
                     Text(formatEventDateTime(event.eventDateTime))
@@ -80,11 +83,11 @@ struct EventDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.top, 16)
 
-                // MARK:x Countdown Timer
+                // MARK: - Countdown Timer
                 CountdownTimerView(eventDate: event.eventDateTime)
                     .padding(.top, 8)
 
-                // MARK: course picker section
+                // MARK: - Course Menu
                 Menu {
                     ForEach(availableCourses, id: \.self) { course in
                         Button(course) {
@@ -94,7 +97,6 @@ struct EventDetailView: View {
                 } label: {
                     HStack(spacing: 8) {
                         Text(selectedCourse ?? "Select Course")
-
                         Image(systemName: "chevron.up.chevron.down")
                     }
                     .foregroundColor(.primary)
@@ -104,21 +106,18 @@ struct EventDetailView: View {
                 .glassEffect(.regular.interactive())
                 .padding(.top, 8)
 
-    
-                // MARK: Challenge cards TabView
+                // MARK: - Challenge Cards
                 ChallengeCardsTabView(eventID: eventID, courseType: selectedCourse ?? "")
                     .frame(height: 460)
                     .indexViewStyle(.page(backgroundDisplayMode: .always))
                     .padding(.top, -45)
-                
+
                 Spacer()
             }
             .padding(.horizontal, 16)
-            
         }
     }
 
-    //Format for the date and time
     private func formatEventDateTime(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM d · h:mm a"

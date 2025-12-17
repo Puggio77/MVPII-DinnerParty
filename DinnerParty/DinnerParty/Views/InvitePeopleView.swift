@@ -5,111 +5,112 @@
 //  Created by Seyedreza Aghayarikordkandi on 15/12/25.
 //
 
-
-
-//
-//  InvitePeopleView.swift
-//  DinnerParty
-//
-//  Created by Seyedreza Aghayarikordkandi on 12/12/25.
-//
-
 import SwiftUI
 
 struct InvitePeopleView: View {
-    
-    @State private var friendName: String = ""
-    @State private var friends: [String] = []
-    
+
+    let eventID: UUID
+
+    @State private var inviteURL: URL?
+    @State private var isGenerating = false
+    @State private var errorText: String = ""
+    @State private var showCopiedFeedback = false
+
+    @ObservedObject private var eventManager = EventManager.shared
+
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 24) {
-                
-                // MARK: Title
-                Text("Invite People")
-                    .font(.system(size: 28, weight: .bold, design: .serif))
-                    .padding(.top, 10)
-                
-                // MARK: TextField + Add Button
-                HStack {
-                    TextField("Enter friend's name", text: $friendName)
+        VStack(spacing: 24) {
+
+            // Title
+            Text("Invite People")
+                .font(.system(size: 28, weight: .bold, design: .serif))
+                .padding(.top, 10)
+
+            if let url = inviteURL {
+                VStack(spacing: 16) {
+
+                    Text("Invite link")
+                        .font(.headline)
+
+                    Text(url.absoluteString)
+                        .font(.footnote)
+                        .multilineTextAlignment(.center)
                         .padding()
                         .background(Color(.systemGray6))
                         .cornerRadius(16)
-                    
+
                     Button {
-                        addFriend()
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.system(size: 20, weight: .bold, design: .serif))
-                            .padding()
-                            .background(Color.amberGlow)
-                            .foregroundColor(.white)
-                            .clipShape(Circle())
-                    }
-                }
-                .padding(.horizontal, 24)
-                
-                // MARK: Friends List
-                if friends.isEmpty {
-                    Text("No friends added yet.")
-                        .foregroundColor(.gray)
-                } else {
-                    List {
-                        ForEach(friends, id: \.self) { friend in
-                            HStack {
-                                Text(friend)
-                                    .font(.system(size: 18, weight: .medium, design: .serif))
-                                    .padding(.vertical, 5)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "person.crop.circle.fill.badge.checkmark")
-                                    .foregroundColor(Color.amberGlow)
-                            }
+                        UIPasteboard.general.string = url.absoluteString
+                        showCopiedFeedback = true
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            showCopiedFeedback = false
                         }
-                        .onDelete(perform: deleteFriend)
+                    } label: {
+                        Text(showCopiedFeedback ? "Copied ✓" : "Copy link")
+                            .font(.system(size: 18, weight: .semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(showCopiedFeedback ? Color.green : Color.amberGlow)
+                            .foregroundColor(.white)
+                            .cornerRadius(20)
                     }
-                    .frame(maxHeight: 300)
+                    .padding(.horizontal, 24)
+
+                    ShareLink(item: url) {
+                        Text("Share invite link")
+                            .font(.system(size: 18, weight: .semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(Color("MutedTeal"))
+                            .foregroundColor(.white)
+                            .cornerRadius(20)
+                    }
+                    .padding(.horizontal, 24)
                 }
-                
-                Spacer()
-                
-                // MARK: Send Invite Button
+            } else {
                 Button {
-                    // future: connect to CloudKit / backend
+                    Task { await generateInviteLink() }
                 } label: {
-                    Text("Send Invites")
-                        .font(.system(size: 18, weight: .semibold, design: .serif))
+                    Text(isGenerating ? "Generating..." : "Generate invite link")
+                        .font(.system(size: 18, weight: .semibold))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(friends.isEmpty ? Color.gray.opacity(0.3) : Color("MutedTeal"))
+                        .background(isGenerating ? Color.gray.opacity(0.3) : Color("MutedTeal"))
                         .foregroundColor(.white)
                         .cornerRadius(20)
                 }
                 .padding(.horizontal, 24)
-                .disabled(friends.isEmpty)
-                
-                Spacer()
+                .disabled(isGenerating)
             }
-            .navigationTitle("Invite Guests")
+
+            if !errorText.isEmpty {
+                Text(errorText)
+                    .foregroundColor(.red)
+                    .padding(.horizontal, 24)
+            }
+
+            Spacer()
         }
+        .navigationTitle("Invite Guests")
+        .navigationBarTitleDisplayMode(.inline)
     }
-    
-    // MARK: Functions
-    private func addFriend() {
-        let trimmed = friendName.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty else { return }
-        
-        friends.append(trimmed)
-        friendName = ""
-    }
-    
-    private func deleteFriend(at offsets: IndexSet) {
-        friends.remove(atOffsets: offsets)
+
+    private func generateInviteLink() async {
+        isGenerating = true
+        errorText = ""
+
+        do {
+            let url = try await eventManager.createInviteLink(for: eventID)
+            inviteURL = url
+        } catch {
+            errorText = error.localizedDescription
+        }
+
+        isGenerating = false
     }
 }
 
 #Preview {
-    InvitePeopleView()
+    InvitePeopleView(eventID: Event.sampleEvent.id)
 }

@@ -18,6 +18,7 @@ struct CreateEventView: View {
     @State private var showDatePicker = false
     @State private var selectedDate = Date()
     @State private var hasSelectedDate = false
+    @State private var isSaving = false
 
     @State private var appetisers = 0
     @State private var mainDishes = 0
@@ -31,10 +32,17 @@ struct CreateEventView: View {
         return formatter
     }
 
+    private var isFormValid: Bool {
+        !eventTitle.isEmpty &&
+        !eventLocation.isEmpty &&
+        hasSelectedDate &&
+        (appetisers > 0 || mainDishes > 0 || dessert > 0 || sideDishes > 0) &&
+        !isSaving
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
-                // Background
                 Color(.systemGray6)
                     .ignoresSafeArea()
 
@@ -45,8 +53,7 @@ struct CreateEventView: View {
                         TextField(
                             "",
                             text: $eventTitle,
-                            prompt: Text("Event Title")
-                                .foregroundStyle(.primary)
+                            prompt: Text("Event Title").foregroundStyle(.primary)
                         )
                         .font(.title.bold())
                         .fontDesign(.serif)
@@ -59,8 +66,7 @@ struct CreateEventView: View {
                         TextField(
                             "",
                             text: $eventLocation,
-                            prompt: Text("Event Location")
-                                .foregroundStyle(.primary)
+                            prompt: Text("Event Location").foregroundStyle(.primary)
                         )
                         .font(.headline)
                         .foregroundColor(.secondary)
@@ -77,18 +83,15 @@ struct CreateEventView: View {
                                 Image(systemName: "calendar")
                                 Text(
                                     hasSelectedDate
-                                        ? dateFormatter.string(from: selectedDate)
-                                        : "Date and Time"
+                                    ? dateFormatter.string(from: selectedDate)
+                                    : "Date and Time"
                                 )
                             }
                             .font(.headline)
                             .foregroundStyle(.white)
                             .padding(.vertical, 20)
                             .frame(maxWidth: .infinity)
-                            .background(.amberGlow, in: Capsule())
-                            .foregroundStyle(.white)
-                            .background((eventTitle.isEmpty || eventLocation.isEmpty || !hasSelectedDate || (appetisers == 0 && mainDishes == 0 && dessert == 0 && sideDishes == 0)) ? Color.gray : .amberGlow)
-                            .clipShape(.capsule)
+                            .background(isFormValid ? Color.amberGlow : Color.gray, in: Capsule())
                             .glassEffect(.regular.interactive(), in: .capsule)
                         }
 
@@ -96,10 +99,9 @@ struct CreateEventView: View {
                         VStack(alignment: .leading, spacing: 16) {
                             Text("Courses")
                                 .font(.title.bold())
-                                .foregroundStyle(.black)
-                            
-                                .padding(.top, 8)
                                 .fontDesign(.serif)
+                                .foregroundStyle(.black)
+                                .padding(.top, 8)
 
                             VStack(spacing: 12) {
                                 CourseStepperView(title: "Appetizers", value: $appetisers)
@@ -112,24 +114,26 @@ struct CreateEventView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 20))
                         }
 
+                        Spacer()
+
                         // MARK: - Add Event Button
                         Button {
-                            createAndNavigateToEvent()
+                            Task {
+                                isSaving = true
+                                createAndSaveEvent()
+                                isSaving = false
+                            }
                         } label: {
-                            Text("Add Event")
+                            Text(isSaving ? "Saving..." : "Add Event")
                                 .font(.headline)
                                 .padding(.vertical, 20)
                                 .frame(maxWidth: .infinity)
                                 .foregroundStyle(.white)
-                                .background(eventTitle.isEmpty ? Color.gray : .amberGlow)
-                                .clipShape(.capsule)
+                                .background(isFormValid ? Color.amberGlow : Color.gray, in: Capsule())
                                 .glassEffect(.regular.interactive(), in: .capsule)
                         }
+                        .disabled(!isFormValid)
                         .padding(.bottom, 20)
-                        .disabled(eventTitle.isEmpty)
-                        .disabled(eventLocation.isEmpty)
-                        .disabled(!hasSelectedDate)
-                        .disabled(appetisers == 0 && mainDishes == 0 && dessert == 0 && sideDishes == 0)
                     }
                     .padding(.top, 20)
                     .padding(.horizontal, 20)
@@ -137,7 +141,6 @@ struct CreateEventView: View {
                 .scrollDismissesKeyboard(.interactively)
             }
             .navigationTitle("Create new event")
-            
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showDatePicker) {
                 DatePickerSheet(
@@ -152,34 +155,28 @@ struct CreateEventView: View {
         }
     }
 
-    // MARK: - Create Event Function
-    private func createAndNavigateToEvent() {
-        // Extract date and time components
+    private func createAndSaveEvent() {
         let calendar = Calendar.current
+
         let dateComponents = calendar.dateComponents([.year, .month, .day], from: selectedDate)
         let timeComponents = calendar.dateComponents([.hour, .minute], from: selectedDate)
 
-        // Create separate Date objects for date and time
         let eventDate = calendar.date(from: dateComponents) ?? Date()
         let eventTime = calendar.date(from: timeComponents) ?? Date()
 
-        // Create the new event
         let newEvent = Event(
             title: eventTitle,
             date: eventDate,
             time: eventTime,
-            location: eventLocation.isEmpty ? "To be determined" : eventLocation,
-            hostName: "You",  // TODO: Get from user profile
+            location: eventLocation,
+            hostName: "You",
             appetizers: appetisers,
             mainDishes: mainDishes,
             desserts: dessert,
             sideDishes: sideDishes
         )
 
-        // Add to event manager
         eventManager.addEvent(newEvent)
-
-        // Dismiss view
         dismiss()
     }
 }

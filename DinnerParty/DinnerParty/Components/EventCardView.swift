@@ -57,5 +57,3 @@ struct EventCardView: View {
     }
     .padding()
 }
-
-
