@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EventsMainView: View {
     
-    @ObservedObject private var eventManager = EventManager.shared
+    @StateObject private var eventManager = EventManager.shared
     @State var isOpen: Bool = false
     
     var body: some View {
