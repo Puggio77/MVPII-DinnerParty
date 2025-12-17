@@ -55,7 +55,7 @@ struct DrawChallengeView: View {
                     Button {
                         dismiss()
                     } label: {
-                        Text("Confirm Challenge")
+                        Text("Accept Challenge")
                             .font(.headline)
                             .padding(.vertical, 20)
                             .frame(maxWidth: .infinity)

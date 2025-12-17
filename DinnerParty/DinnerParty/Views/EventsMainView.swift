@@ -13,10 +13,10 @@ private struct DeepLinkedEvent: Identifiable, Hashable {
 }
 
 struct EventsMainView: View {
-    
-    @ObservedObject private var eventManager = EventManager.shared
+
+    @StateObject private var eventManager = EventManager.shared
     @State private var deepLinkedEvent: DeepLinkedEvent?
-    
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -27,6 +27,7 @@ struct EventsMainView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Upcoming")
                                 .font(.title2.bold())
+                                .fontDesign(.serif)
                                 .foregroundStyle(Color.amberGlow)
                                 .padding(.horizontal)
 
@@ -104,21 +105,21 @@ struct EventsMainView: View {
             }
         }
     }
-    
+
     // Events happening in the future
     private var upcomingEvents: [Event] {
         eventManager.events
             .filter { $0.eventDateTime > Date() }
             .sorted { $0.eventDateTime < $1.eventDateTime }
     }
-    
+
     // Events already finished
     private var pastEvents: [Event] {
         eventManager.events
             .filter { $0.eventDateTime <= Date() }
             .sorted { $0.eventDateTime > $1.eventDateTime }
     }
-    
+
     // Date formatter (currently unused, kept for future use)
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()

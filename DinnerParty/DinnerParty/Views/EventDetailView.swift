@@ -10,25 +10,22 @@ import SwiftUI
 struct EventDetailView: View {
     let eventID: UUID
     @ObservedObject private var eventManager = EventManager.shared
-    
-    // Retrieve the event from the shared manager
+
     private var event: Event? {
         eventManager.getEvent(by: eventID)
     }
 
-    // Build the course list dynamically based on the event configuration
     private var availableCourses: [String] {
         guard let event = event else { return [] }
-        
+
         var courses: [String] = []
         if event.appetizers > 0 { courses.append("Appetizers") }
         if event.mainDishes > 0 { courses.append("Main Dishes") }
         if event.desserts > 0 { courses.append("Desserts") }
         if event.sideDishes > 0 { courses.append("Side Dishes") }
-        
         return courses
     }
-    
+
     @State private var selectedCourse: String?
 
     var body: some View {
@@ -52,13 +49,12 @@ struct EventDetailView: View {
             }
         }
         .onAppear {
-            // Initialize the selected course the first time the view appears
             if selectedCourse == nil {
                 selectedCourse = availableCourses.first
             }
         }
     }
-    
+
     @ViewBuilder
     private func eventContent(_ event: Event) -> some View {
         ZStack {
@@ -66,14 +62,11 @@ struct EventDetailView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 24) {
-
-                // Event information section
                 VStack(spacing: 8) {
                     Text(event.title)
                         .font(.largeTitle.bold())
-                        .foregroundStyle(
-                            Color(red: 0.25, green: 0.15, blue: 0.1)
-                        )
+                        .foregroundStyle(Color(red: 0.25, green: 0.15, blue: 0.1))
+                        .fontDesign(.serif)
 
                     Text(formatEventDateTime(event.eventDateTime))
                         .font(.title3.bold())
@@ -83,19 +76,18 @@ struct EventDetailView: View {
                         Image(systemName: "mappin.and.ellipse")
                             .font(.headline)
                         Text(event.location)
-                            .font(.title3)
+                            .font(.subheadline)
                     }
                     .foregroundStyle(.secondary)
                 }
-                .fontDesign(.serif)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.top, 16)
 
-                // Countdown timer until the event starts
+                // MARK: - Countdown Timer
                 CountdownTimerView(eventDate: event.eventDateTime)
                     .padding(.top, 8)
 
-                // Course selection menu
+                // MARK: - Course Menu
                 Menu {
                     ForEach(availableCourses, id: \.self) { course in
                         Button(course) {
@@ -108,14 +100,13 @@ struct EventDetailView: View {
                         Image(systemName: "chevron.up.chevron.down")
                     }
                     .foregroundColor(.primary)
-                    .fontDesign(.serif)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 20)
                 }
                 .glassEffect(.regular.interactive())
                 .padding(.top, 8)
 
-                // Challenge cards pager
+                // MARK: - Challenge Cards
                 ChallengeCardsTabView(eventID: eventID, courseType: selectedCourse ?? "")
                     .frame(height: 460)
                     .indexViewStyle(.page(backgroundDisplayMode: .always))
@@ -127,7 +118,6 @@ struct EventDetailView: View {
         }
     }
 
-    // Formats the event date and time for display
     private func formatEventDateTime(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM d · h:mm a"
@@ -135,6 +125,19 @@ struct EventDetailView: View {
     }
 }
 
-#Preview {
-    EventDetailView(eventID: Event.sampleEvent.id)
+// MARK: - Previews
+
+#Preview("With Sample Event") {
+    let sampleEvent = Event.sampleEvent
+    EventManager.shared.events = [sampleEvent]
+    return NavigationStack {
+        EventDetailView(eventID: sampleEvent.id)
+    }
+}
+
+#Preview("Event Not Found") {
+    EventManager.shared.events = []
+    return NavigationStack {
+        EventDetailView(eventID: UUID())
+    }
 }

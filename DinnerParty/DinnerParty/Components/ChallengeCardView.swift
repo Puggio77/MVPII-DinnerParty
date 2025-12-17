@@ -13,10 +13,10 @@ struct ChallengeCardView: View {
     var body: some View {
         ZStack {
             // Orange background card
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
+            RoundedRectangle(cornerRadius: 25, style: .continuous)
                 .fill(Color.vibrantOrange)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 32, style: .continuous)
+                    RoundedRectangle(cornerRadius: 25, style: .continuous)
                         .stroke(Color.white, lineWidth: 5)
                 )
             
@@ -24,11 +24,11 @@ struct ChallengeCardView: View {
             VStack {
                 HStack {
                     Text("Challenge")
-                        .font(.system(.title3, design: .serif))
+                        .font(.system(.headline, design: .serif))
                         .fontWeight(.bold)
                         .foregroundStyle(Color.warmCream)
-                        .padding(.leading, 24)
-                        .padding(.top, 24)
+                        .padding(.leading, 20)
+                        .padding(.top, 20)
                     Spacer()
                 }
                 Spacer()
@@ -56,7 +56,7 @@ struct ChallengeCardView: View {
                     Image(.cardDiamondSymbol)
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 70, height: 70)
+                        .frame(width: 60, height: 60)
                         .padding(3)
                 }
             }
