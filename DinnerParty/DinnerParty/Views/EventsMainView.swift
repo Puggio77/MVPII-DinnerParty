@@ -14,7 +14,7 @@ private struct DeepLinkedEvent: Identifiable, Hashable {
 
 struct EventsMainView: View {
 
-    @StateObject private var eventManager = EventManager.shared
+    @ObservedObject private var eventManager = EventManager.shared
     @State private var deepLinkedEvent: DeepLinkedEvent?
 
     var body: some View {

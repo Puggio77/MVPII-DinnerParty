@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct InvitePeopleView: View {
 
@@ -96,6 +97,7 @@ struct InvitePeopleView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
+    // Generate invite link using CloudKit
     private func generateInviteLink() async {
         isGenerating = true
         errorText = ""
