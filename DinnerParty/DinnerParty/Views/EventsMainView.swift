@@ -7,16 +7,22 @@
 
 import SwiftUI
 
+private struct DeepLinkedEvent: Identifiable, Hashable {
+    let id: UUID
+}
+
 struct EventsMainView: View {
     
     @ObservedObject private var eventManager = EventManager.shared
     @State var isOpen: Bool = false
+    @State private var deepLinkedEvent: DeepLinkedEvent?
     
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    // Upcoming Section
+
+                    // Upcoming events section
                     if !upcomingEvents.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Upcoming")
@@ -39,7 +45,7 @@ struct EventsMainView: View {
                         }
                     }
 
-                    // Past Section
+                    // Past events section
                     if !pastEvents.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Past")
@@ -73,19 +79,44 @@ struct EventsMainView: View {
                     }
                 }
             }
+            // Navigation triggered by a deep link
+            .navigationDestination(item: $deepLinkedEvent) { item in
+                EventDetailView(eventID: item.id)
+            }
+            // Handle incoming deep links (invite links)
+            .onOpenURL { url in
+                Task {
+                    if let joinedID = await eventManager.handleIncomingURL(url) {
+                        deepLinkedEvent = DeepLinkedEvent(id: joinedID)
+                    }
+                }
+            }
+            // Pull to refresh events from CloudKit
+            .refreshable {
+                do {
+                    try await eventManager.refresh()
+                } catch {
+                    // Errors are handled inside EventManager
+                }
+            }
         }
     }
     
+    // Events happening in the future
     private var upcomingEvents: [Event] {
-        eventManager.events.filter { $0.eventDateTime > Date() }
+        eventManager.events
+            .filter { $0.eventDateTime > Date() }
             .sorted { $0.eventDateTime < $1.eventDateTime }
     }
     
+    // Events already finished
     private var pastEvents: [Event] {
-        eventManager.events.filter { $0.eventDateTime <= Date() }
+        eventManager.events
+            .filter { $0.eventDateTime <= Date() }
             .sorted { $0.eventDateTime > $1.eventDateTime }
     }
     
+    // Date formatter (currently unused, kept for future use)
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d, yyyy 'at' h:mm a"

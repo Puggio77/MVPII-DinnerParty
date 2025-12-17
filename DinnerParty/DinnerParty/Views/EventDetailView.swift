@@ -11,13 +11,14 @@ struct EventDetailView: View {
     let eventID: UUID
     @ObservedObject private var eventManager = EventManager.shared
     
+    // Retrieve the event from the shared manager
     private var event: Event? {
         eventManager.getEvent(by: eventID)
     }
 
     @State private var selectedCourse = "Main Course"
     private let courses = [
-        "Main Course", "Starters", "Side Dishes", "Desserts", "Drinks",
+        "Main Course", "Starters", "Side Dishes", "Desserts", "Drinks"
     ]
 
     var body: some View {
@@ -31,6 +32,15 @@ struct EventDetailView: View {
         }
         .navigationTitle("Event Detail")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink {
+                    InvitePeopleView(eventID: eventID)
+                } label: {
+                    Text("Invite")
+                }
+            }
+        }
     }
     
     @ViewBuilder
@@ -41,7 +51,7 @@ struct EventDetailView: View {
 
             VStack(spacing: 24) {
 
-                // MARK: Event info section
+                // Event information section
                 VStack(spacing: 8) {
                     Text(event.title)
                         .font(.largeTitle.bold())
@@ -65,11 +75,11 @@ struct EventDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.top, 16)
 
-                // MARK: Countdown Timer
+                // Countdown timer until the event starts
                 CountdownTimerView(eventDate: event.eventDateTime)
                     .padding(.top, 8)
 
-                // MARK: course picker section
+                // Course selection menu
                 Menu {
                     ForEach(courses, id: \.self) { course in
                         Button(course) {
@@ -79,7 +89,6 @@ struct EventDetailView: View {
                 } label: {
                     HStack(spacing: 8) {
                         Text(selectedCourse)
-
                         Image(systemName: "chevron.up.chevron.down")
                     }
                     .foregroundColor(.primary)
@@ -90,10 +99,9 @@ struct EventDetailView: View {
                 .glassEffect(.regular.interactive())
                 .padding(.top, 8)
 
-                //MARK: Challenge card section
+                // Challenge card section
                 RoundedRectangle(cornerRadius: 28)
                     .fill(Color.white)
-
                     .overlay(
                         VStack(spacing: 24) {
                             Spacer()
@@ -109,7 +117,10 @@ struct EventDetailView: View {
                                 .multilineTextAlignment(.center)
                             Spacer()
                             NavigationLink {
-                                DrawChallengeView(eventID: eventID, courseType: selectedCourse)
+                                DrawChallengeView(
+                                    eventID: eventID,
+                                    courseType: selectedCourse
+                                )
                             } label: {
                                 Text("Claim")
                                     .font(.headline)
@@ -125,8 +136,8 @@ struct EventDetailView: View {
                     .frame(height: 350)
                     .padding(.horizontal, 8)
 
-                // MARK: Page indicator dots
-                // ONLY A PLACEHOLDER, use TabView() in the future
+                // Page indicator dots (placeholder)
+                // This will be replaced by a TabView in the future
                 HStack(spacing: 8) {
                     ForEach(0..<4) { index in
                         Circle()
@@ -136,7 +147,8 @@ struct EventDetailView: View {
                                         red: 0.3,
                                         green: 0.25,
                                         blue: 0.2
-                                    ) : Color.gray.opacity(0.4)
+                                    )
+                                    : Color.gray.opacity(0.4)
                             )
                             .frame(width: 8, height: 8)
                     }
@@ -149,7 +161,7 @@ struct EventDetailView: View {
         }
     }
 
-    //Format for the date and time
+    // Formats the event date and time for display
     private func formatEventDateTime(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM d · h:mm a"
