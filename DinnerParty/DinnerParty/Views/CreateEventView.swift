@@ -33,6 +33,15 @@ struct CreateEventView: View {
         return formatter
     }
 
+    // Validates that all required fields are filled
+    private var isFormValid: Bool {
+        !eventTitle.isEmpty &&
+        !eventLocation.isEmpty &&
+        hasSelectedDate &&
+        (appetisers > 0 || mainDishes > 0 || dessert > 0 || sideDishes > 0) &&
+        !isSaving
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -42,7 +51,7 @@ struct CreateEventView: View {
 
                 VStack(spacing: 20) {
 
-                    // MARK: - Event title input
+                    // Event title input
                     TextField(
                         "",
                         text: $eventTitle,
@@ -55,7 +64,7 @@ struct CreateEventView: View {
                     .background(in: Capsule())
                     .multilineTextAlignment(.center)
 
-                    // MARK: - Event location input
+                    // Event location input
                     TextField(
                         "",
                         text: $eventLocation,
@@ -68,7 +77,7 @@ struct CreateEventView: View {
                     .background(in: Capsule())
                     .multilineTextAlignment(.center)
 
-                    // MARK: - Date and time picker button
+                    // Date and time picker button
                     Button {
                         showDatePicker.toggle()
                     } label: {
@@ -88,7 +97,7 @@ struct CreateEventView: View {
                         .glassEffect(.regular.interactive(), in: .capsule)
                     }
 
-                    // MARK: - Courses configuration section
+                    // Courses configuration section
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Courses")
                             .font(.title2.bold())
@@ -108,26 +117,26 @@ struct CreateEventView: View {
 
                     Spacer()
 
-                    // MARK: - Create event button
+                    // Create event button
                     Button {
                         Task {
                             isSaving = true
-                            createAndNavigateToEvent()
-                            // EventManager.addEvent saves the event to CloudKit asynchronously,
+                            createAndSaveEvent()
+                            // EventManager saves the event to CloudKit asynchronously,
                             // so the view can be dismissed immediately for better UX.
                             isSaving = false
                         }
                     } label: {
-                        Text("Add Event")
+                        Text(isSaving ? "Saving..." : "Add Event")
                             .font(.headline)
                             .padding(.vertical, 20)
                             .frame(maxWidth: .infinity)
                             .foregroundStyle(.white)
-                            .background(eventTitle.isEmpty ? Color.gray : .amberGlow)
+                            .background(isFormValid ? Color.amberGlow : Color.gray)
                             .clipShape(.capsule)
                             .glassEffect(.regular.interactive(), in: .capsule)
                     }
-                    .disabled(eventTitle.isEmpty)
+                    .disabled(!isFormValid)
                     .padding(.bottom, 20)
                 }
                 .padding(.top, 20)
@@ -149,10 +158,11 @@ struct CreateEventView: View {
         }
     }
 
-    // MARK: - Create and save a new event
-    private func createAndNavigateToEvent() {
-        // Extract date and time components from the selected date
+    // Builds and saves a new event
+    private func createAndSaveEvent() {
         let calendar = Calendar.current
+
+        // Extract date and time components from the selected date
         let dateComponents = calendar.dateComponents([.year, .month, .day], from: selectedDate)
         let timeComponents = calendar.dateComponents([.hour, .minute], from: selectedDate)
 
@@ -160,22 +170,23 @@ struct CreateEventView: View {
         let eventDate = calendar.date(from: dateComponents) ?? Date()
         let eventTime = calendar.date(from: timeComponents) ?? Date()
 
-        // Build the new Event model
+        // Create the new Event model
         let newEvent = Event(
             title: eventTitle,
             date: eventDate,
             time: eventTime,
-            location: eventLocation.isEmpty ? "To be determined" : eventLocation,
-            hostName: "You",
+            location: eventLocation,
+            hostName: "You", // UI-only placeholder
             appetizers: appetisers,
             mainDishes: mainDishes,
             desserts: dessert,
             sideDishes: sideDishes
         )
 
-        // Save the event using the EventManager (CloudKit-backed)
+        // Save the event using the CloudKit-backed EventManager
         eventManager.addEvent(newEvent)
 
+        // Dismiss the creation view
         dismiss()
     }
 }

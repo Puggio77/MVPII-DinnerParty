@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Wrapper used to navigate after joining an event via deep link
 private struct DeepLinkedEvent: Identifiable, Hashable {
     let id: UUID
 }
@@ -14,7 +15,6 @@ private struct DeepLinkedEvent: Identifiable, Hashable {
 struct EventsMainView: View {
     
     @ObservedObject private var eventManager = EventManager.shared
-    @State var isOpen: Bool = false
     @State private var deepLinkedEvent: DeepLinkedEvent?
     
     var body: some View {
@@ -79,11 +79,13 @@ struct EventsMainView: View {
                     }
                 }
             }
-            // Navigation triggered by a deep link
+
+            // Navigation triggered by a deep link join
             .navigationDestination(item: $deepLinkedEvent) { item in
                 EventDetailView(eventID: item.id)
             }
-            // Handle incoming deep links (invite links)
+
+            // Handle incoming invite links (dinnerparty://join?code=XXXX)
             .onOpenURL { url in
                 Task {
                     if let joinedID = await eventManager.handleIncomingURL(url) {
@@ -91,6 +93,7 @@ struct EventsMainView: View {
                     }
                 }
             }
+
             // Pull to refresh events from CloudKit
             .refreshable {
                 do {

@@ -30,7 +30,7 @@ struct EventCardView: View {
                 .fontWeight(.semibold)
                 .foregroundStyle(.primary)
             
-            Text("\(formattedDate) | \(formattedTime)")
+            Text("\(formattedDate) · \(formattedTime)")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -56,5 +56,3 @@ struct EventCardView: View {
     }
     .padding()
 }
-
-

@@ -16,10 +16,20 @@ struct EventDetailView: View {
         eventManager.getEvent(by: eventID)
     }
 
-    @State private var selectedCourse = "Main Course"
-    private let courses = [
-        "Main Course", "Starters", "Side Dishes", "Desserts", "Drinks"
-    ]
+    // Build the course list dynamically based on the event configuration
+    private var availableCourses: [String] {
+        guard let event = event else { return [] }
+        
+        var courses: [String] = []
+        if event.appetizers > 0 { courses.append("Appetizers") }
+        if event.mainDishes > 0 { courses.append("Main Dishes") }
+        if event.desserts > 0 { courses.append("Desserts") }
+        if event.sideDishes > 0 { courses.append("Side Dishes") }
+        
+        return courses
+    }
+    
+    @State private var selectedCourse: String?
 
     var body: some View {
         Group {
@@ -39,6 +49,12 @@ struct EventDetailView: View {
                 } label: {
                     Text("Invite")
                 }
+            }
+        }
+        .onAppear {
+            // Initialize the selected course the first time the view appears
+            if selectedCourse == nil {
+                selectedCourse = availableCourses.first
             }
         }
     }
@@ -81,14 +97,14 @@ struct EventDetailView: View {
 
                 // Course selection menu
                 Menu {
-                    ForEach(courses, id: \.self) { course in
+                    ForEach(availableCourses, id: \.self) { course in
                         Button(course) {
                             selectedCourse = course
                         }
                     }
                 } label: {
                     HStack(spacing: 8) {
-                        Text(selectedCourse)
+                        Text(selectedCourse ?? "Select Course")
                         Image(systemName: "chevron.up.chevron.down")
                     }
                     .foregroundColor(.primary)
@@ -99,61 +115,11 @@ struct EventDetailView: View {
                 .glassEffect(.regular.interactive())
                 .padding(.top, 8)
 
-                // Challenge card section
-                RoundedRectangle(cornerRadius: 28)
-                    .fill(Color.white)
-                    .overlay(
-                        VStack(spacing: 24) {
-                            Spacer()
-                            Text("Draw a card to reveal the challenge")
-                                .font(
-                                    .system(
-                                        size: 22,
-                                        weight: .semibold,
-                                        design: .serif
-                                    )
-                                )
-                                .padding()
-                                .multilineTextAlignment(.center)
-                            Spacer()
-                            NavigationLink {
-                                DrawChallengeView(
-                                    eventID: eventID,
-                                    courseType: selectedCourse
-                                )
-                            } label: {
-                                Text("Claim")
-                                    .font(.headline)
-                                    .padding(.vertical, 20)
-                                    .padding(.horizontal, 100)
-                                    .background(.amberGlow, in: .capsule)
-                                    .foregroundColor(.white)
-                                    .glassEffect(.regular.interactive())
-                            }
-                        }
-                        .padding(.vertical, 32)
-                    )
-                    .frame(height: 350)
-                    .padding(.horizontal, 8)
-
-                // Page indicator dots (placeholder)
-                // This will be replaced by a TabView in the future
-                HStack(spacing: 8) {
-                    ForEach(0..<4) { index in
-                        Circle()
-                            .fill(
-                                index == 1
-                                    ? Color(
-                                        red: 0.3,
-                                        green: 0.25,
-                                        blue: 0.2
-                                    )
-                                    : Color.gray.opacity(0.4)
-                            )
-                            .frame(width: 8, height: 8)
-                    }
-                }
-                .padding(.top, 8)
+                // Challenge cards pager
+                ChallengeCardsTabView(eventID: eventID, courseType: selectedCourse ?? "")
+                    .frame(height: 460)
+                    .indexViewStyle(.page(backgroundDisplayMode: .always))
+                    .padding(.top, -45)
 
                 Spacer()
             }
