@@ -63,6 +63,7 @@ struct EventDetailView: View {
                         .foregroundStyle(
                             Color(red: 0.25, green: 0.15, blue: 0.1)
                         )
+                        .fontDesign(.serif)
 
                     Text(formatEventDateTime(event.eventDateTime))
                         .font(.title3.bold())
@@ -72,15 +73,14 @@ struct EventDetailView: View {
                         Image(systemName: "mappin.and.ellipse")
                             .font(.headline)
                         Text(event.location)
-                            .font(.title3)
+                            .font(.subheadline)
                     }
                     .foregroundStyle(.secondary)
                 }
-                .fontDesign(.serif)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.top, 16)
 
-                // MARK: Countdown Timer
+                // MARK:x Countdown Timer
                 CountdownTimerView(eventDate: event.eventDateTime)
                     .padding(.top, 8)
 
@@ -98,7 +98,6 @@ struct EventDetailView: View {
                         Image(systemName: "chevron.up.chevron.down")
                     }
                     .foregroundColor(.primary)
-                    .fontDesign(.serif)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 20)
                 }
@@ -127,6 +126,19 @@ struct EventDetailView: View {
     }
 }
 
-#Preview {
-    EventDetailView(eventID: Event.sampleEvent.id)
+// MARK: - Previews
+
+#Preview("With Sample Event") {
+    let sampleEvent = Event.sampleEvent
+    EventManager.shared.events = [sampleEvent]
+    return NavigationStack {
+        EventDetailView(eventID: sampleEvent.id)
+    }
+}
+
+#Preview("Event Not Found") {
+    EventManager.shared.events = []
+    return NavigationStack {
+        EventDetailView(eventID: UUID())
+    }
 }

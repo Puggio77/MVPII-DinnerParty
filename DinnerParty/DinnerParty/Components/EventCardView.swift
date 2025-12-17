@@ -29,6 +29,7 @@ struct EventCardView: View {
                 .font(.title3)
                 .fontWeight(.semibold)
                 .foregroundStyle(.primary)
+                .fontDesign(.serif)
             
             Text("\(formattedDate) · \(formattedTime)")
                 .font(.subheadline)

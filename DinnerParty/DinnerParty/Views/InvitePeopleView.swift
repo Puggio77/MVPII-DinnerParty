@@ -27,7 +27,7 @@ struct InvitePeopleView: View {
                 
                 // MARK: Title
                 Text("Invite People")
-                    .font(.system(size: 28, weight: .bold))
+                    .font(.system(size: 28, weight: .bold, design: .serif))
                     .padding(.top, 10)
                 
                 // MARK: TextField + Add Button
@@ -41,7 +41,7 @@ struct InvitePeopleView: View {
                         addFriend()
                     } label: {
                         Image(systemName: "plus")
-                            .font(.system(size: 20, weight: .bold))
+                            .font(.system(size: 20, weight: .bold, design: .serif))
                             .padding()
                             .background(Color.amberGlow)
                             .foregroundColor(.white)
@@ -59,7 +59,7 @@ struct InvitePeopleView: View {
                         ForEach(friends, id: \.self) { friend in
                             HStack {
                                 Text(friend)
-                                    .font(.system(size: 18, weight: .medium))
+                                    .font(.system(size: 18, weight: .medium, design: .serif))
                                     .padding(.vertical, 5)
                                 
                                 Spacer()
@@ -80,7 +80,7 @@ struct InvitePeopleView: View {
                     // future: connect to CloudKit / backend
                 } label: {
                     Text("Send Invites")
-                        .font(.system(size: 18, weight: .semibold))
+                        .font(.system(size: 18, weight: .semibold, design: .serif))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
                         .background(friends.isEmpty ? Color.gray.opacity(0.3) : Color("MutedTeal"))
